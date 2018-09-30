@@ -76,10 +76,17 @@ public class CameraController : MonoBehaviour {
 
     }
 
-    void UpdateRoomBoundry() {
+    public void UpdateRoomBoundry(RoomBoundary new_boundary) {
 
-        // This function would be called whenever the player enters a new room, we would
-        // just retrieve the new room's boundaries and copy them into our max / min values.
+        Camera camera = GetComponent<Camera>();
+
+        float camera_height = camera.orthographicSize * 2.0f;
+        float camera_width = camera_height * Screen.width / Screen.height;
+
+        xMaxValue = new_boundary.boundary_right - (camera_width / 2);
+        xMinValue = new_boundary.boundary_left + (camera_width / 2);
+        yMaxValue = new_boundary.boundary_top - (camera_height / 2);
+        yMinValue = new_boundary.boundary_bottom + (camera_height / 2);
 
     }
 }
