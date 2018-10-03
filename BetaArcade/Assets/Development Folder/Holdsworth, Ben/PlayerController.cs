@@ -31,6 +31,20 @@ public class PlayerController : MonoBehaviour {
 
         }
 
+        if (Input.GetButton("Move - Up")) {
+
+            var yVelocity = 10.0f * Time.deltaTime;
+
+            transform.Translate(0, yVelocity, 0);
+
+        }
+
+        if (Input.GetButton("Move - Down"))
+        {
+            var yVelocity = -10.0f * Time.deltaTime;
+            transform.Translate(0, yVelocity, 0);
+        }
+
         //---------------------------------Room-Boundary-Check---------------------------------\\
 
         if (transform.position.x < current_room.boundary_left) {

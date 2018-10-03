@@ -56,13 +56,13 @@ public class CameraController : MonoBehaviour {
 
         }
 
-        if (yMaxReached) {
+        else if (yMaxReached) {
 
             clamped_position.y = Mathf.Clamp(target.position.y, target.position.y, yMaxValue);
 
         }
 
-        if (yMinReached) {
+        else if (yMinReached) {
 
             clamped_position.y = Mathf.Clamp(target.position.y, yMinValue, target.position.y);
 
@@ -81,7 +81,7 @@ public class CameraController : MonoBehaviour {
         Camera camera = GetComponent<Camera>();
 
         float camera_height = camera.orthographicSize * 2.0f;
-        float camera_width = camera_height * Screen.width / Screen.height;
+        float camera_width = camera_height * camera.aspect;
 
         xMaxValue = new_boundary.boundary_right - (camera_width / 2);
         xMinValue = new_boundary.boundary_left + (camera_width / 2);
