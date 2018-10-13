@@ -33,13 +33,26 @@ public class CameraController : MonoBehaviour {
     [Tooltip("The image we are fading in and out to. Recommended to just keep this as a black image.")]
     public Image fade_image;
     [Tooltip("The speed it takes for the image to change from 0 to 1 opactity. (0 being transparent)")]
-    public float fade_in_time = 0;
+    public float fade_in_speed = 0;
     [Tooltip("The speed it takes for the image to change from 1 to 0 opactity. (0 being transparent)")]
-    public float fade_out_time = 0;
-    [Tooltip("This value determines how long the image will linger on 1 opacity.")]
+    public float fade_out_speed = 0;
+    [Tooltip("This value determines how long the image will linger on 1 opacity in seconds.")]
     public float fade_blackout_time = 0;
 
     private bool isBlack = true;
+    private bool isTransitioning = false;
+
+    private void Start() {
+
+        StartCoroutine(Fade());     // There is an issue with the coroutine running at a delay the first time it is called.
+                                    // This call to start the coroutine gets the 'delayed' call out of the way so that all 
+                                    // calls to Fade() when transitioning between rooms work as intended.
+        isTransitioning = false;    // This is because we set transitioning to true at the start of the update boundary
+                                    // function and set it back to false when we fade to black, on start we don't fade to
+                                    // black.
+
+        
+    }
 
     void Update() {
 
@@ -81,15 +94,22 @@ public class CameraController : MonoBehaviour {
 
         }
 
+        // This can be reworked later, the variables are set to public for testing whilst running the game
+        // but later on we can just remove all these if statements and just clamp the position on each update.
+
     }
 
 	void LateUpdate() {
 
-        transform.position = Vector3.SmoothDamp(transform.position, clamped_position + camera_offset, ref camera_velocity, camera_lag);
-
+        if (!isTransitioning) {
+            transform.position = Vector3.SmoothDamp(transform.position, clamped_position + camera_offset, ref camera_velocity, camera_lag);
+        }
+        
     }
 
-    public void UpdateRoomBoundry(RoomBoundary new_boundary) {
+    public void UpdateRoomBoundry(RoomBoundary room) {
+
+        isTransitioning = true;
 
         StartCoroutine(Fade());
 
@@ -98,11 +118,11 @@ public class CameraController : MonoBehaviour {
         float camera_height = camera.orthographicSize * 2.0f;
         float camera_width = camera_height * camera.aspect;
 
-        xMaxValue = new_boundary.boundary_right - (camera_width / 2);
-        xMinValue = new_boundary.boundary_left + (camera_width / 2);
-        yMaxValue = new_boundary.boundary_top - (camera_height / 2);
-        yMinValue = new_boundary.boundary_bottom + (camera_height / 2);
-        
+        xMaxValue = room.boundary_right - (camera_width / 2);
+        xMinValue = room.boundary_left + (camera_width / 2);
+        yMaxValue = room.boundary_top - (camera_height / 2);
+        yMinValue = room.boundary_bottom + (camera_height / 2);
+
     }
 
     IEnumerator Fade() {
@@ -110,18 +130,17 @@ public class CameraController : MonoBehaviour {
         while (!isBlack) {
 
             var temp_colour = fade_image.color;
-            temp_colour.a += fade_in_time * Time.deltaTime;
+            temp_colour.a += fade_in_speed * Time.deltaTime;
             fade_image.color = temp_colour;
 
             if (temp_colour.a >= 1) {
 
                 isBlack = true;
 
-                for (int i = 0; i < fade_blackout_time; i++)
-                {
-                    yield return null;
-                }
+                isTransitioning = false;
 
+                yield return new WaitForSeconds(fade_blackout_time);
+                
             }
 
             yield return null;
@@ -131,7 +150,7 @@ public class CameraController : MonoBehaviour {
         while (isBlack) {
 
             var temp_colour = fade_image.color;
-            temp_colour.a -= fade_out_time * Time.deltaTime;
+            temp_colour.a -= fade_out_speed * Time.deltaTime;
             fade_image.color = temp_colour;
 
             if (temp_colour.a <= 0) {
@@ -143,8 +162,6 @@ public class CameraController : MonoBehaviour {
             yield return null;
 
         }
-
-        //yield return null;
 
     }
 

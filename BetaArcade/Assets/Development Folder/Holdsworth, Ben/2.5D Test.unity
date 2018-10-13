@@ -977,9 +977,9 @@ MonoBehaviour:
   yMaxValue: 0
   yMinValue: 0
   fade_image: {fileID: 207983594}
-  fade_in_time: 15
-  fade_out_time: 20
-  fade_blackout_time: 5
+  fade_in_speed: 15
+  fade_out_speed: 20
+  fade_blackout_time: 0.1
 --- !u!222 &2003619189
 CanvasRenderer:
   m_ObjectHideFlags: 0
