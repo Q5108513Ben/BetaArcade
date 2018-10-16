@@ -16,19 +16,17 @@ public class CameraController : MonoBehaviour {
     private Vector3 clamped_position;
     private Vector3 camera_velocity = Vector3.zero;
 
-    public bool xMaxReached = false;
-    public bool xMinReached = false;
-    public bool yMaxReached = false;
-    public bool yMinReached = false;
-
+    [System.NonSerialized]
     public float xMaxValue = 0;
+    [System.NonSerialized]
     public float xMinValue = 0;
+    [System.NonSerialized]
     public float yMaxValue = 0;
+    [System.NonSerialized]
     public float yMinValue = 0;
 
     // If the camera's dimensions reach the max / min value we need to prevent it from
-    // moving any further in that direction. The max / min values will be retrieved 
-    // from the current room the player is in, for now they are hardcoded for testing.
+    // moving any further in that direction.
 
     [Tooltip("The image we are fading in and out to. Recommended to just keep this as a black image.")]
     public Image fade_image;
@@ -51,52 +49,15 @@ public class CameraController : MonoBehaviour {
                                     // function and set it back to false when we fade to black, on start we don't fade to
                                     // black.
 
-        
     }
 
     void Update() {
 
         clamped_position = target.position;
 
-        if (xMaxReached && xMinReached) {
-
-            clamped_position.x = Mathf.Clamp(target.position.x, xMinValue, xMaxValue);
-
-        }
-
-        else if (xMaxReached) {
-
-            clamped_position.x = Mathf.Clamp(target.position.x, target.position.x, xMaxValue);
-
-        }
-
-        else if (xMinReached) {
-
-            clamped_position.x = Mathf.Clamp(target.position.x, xMinValue, target.position.x);
-
-        }
-
-        if (yMaxReached && yMinReached) {
-
-            clamped_position.y = Mathf.Clamp(target.position.y, yMinValue, yMaxValue);
-
-        }
-
-        else if (yMaxReached) {
-
-            clamped_position.y = Mathf.Clamp(target.position.y, target.position.y, yMaxValue);
-
-        }
-
-        else if (yMinReached) {
-
-            clamped_position.y = Mathf.Clamp(target.position.y, yMinValue, target.position.y);
-
-        }
-
-        // This can be reworked later, the variables are set to public for testing whilst running the game
-        // but later on we can just remove all these if statements and just clamp the position on each update.
-
+        clamped_position.x = Mathf.Clamp(target.position.x, xMinValue, xMaxValue);
+        clamped_position.y = Mathf.Clamp(target.position.y, yMinValue, yMaxValue);
+        
     }
 
 	void LateUpdate() {
@@ -107,7 +68,7 @@ public class CameraController : MonoBehaviour {
         
     }
 
-    public void UpdateRoomBoundry(RoomBoundary room) {
+    public void UpdateRoomBoundary(RoomBoundary room) {
 
         isTransitioning = true;
 

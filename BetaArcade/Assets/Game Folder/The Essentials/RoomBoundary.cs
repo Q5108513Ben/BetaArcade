@@ -2,14 +2,22 @@
 
 public class RoomBoundary : MonoBehaviour {
 
+    [Tooltip("Links the given room as being to the left of the selected room. This is required to transition from room to room.")]
     public RoomBoundary room_to_left;
+    [Tooltip("Links the given room as being to the right of the selected room. This is required to transition from room to room.")]
     public RoomBoundary room_to_right;
+    [Tooltip("Links the given room as being above the selected room. This is required to transition from room to room.")]
     public RoomBoundary room_above;
+    [Tooltip("Links the given room as being below the selected room. This is required to transition from room to room.")]
     public RoomBoundary room_below;
 
+    [System.NonSerialized]
     public float boundary_left;
+    [System.NonSerialized]
     public float boundary_right;
+    [System.NonSerialized]
     public float boundary_top;
+    [System.NonSerialized]
     public float boundary_bottom;
 
     void Start() {
