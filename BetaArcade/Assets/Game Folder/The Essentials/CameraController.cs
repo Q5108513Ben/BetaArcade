@@ -40,6 +40,10 @@ public class CameraController : MonoBehaviour {
     private bool isBlack = true;
     private bool isTransitioning = false;
 
+    // Temporary variables for Max's camera easing.
+    public float speed;
+    public bool maxCameraEnabled = false;
+
     private void Start() {
 
         StartCoroutine(Fade());     // There is an issue with the coroutine running at a delay the first time it is called.
@@ -63,7 +67,15 @@ public class CameraController : MonoBehaviour {
 	void LateUpdate() {
 
         if (!isTransitioning) {
-            transform.position = Vector3.SmoothDamp(transform.position, clamped_position + camera_offset, ref camera_velocity, camera_lag);
+
+            if (!maxCameraEnabled) {
+                transform.position = Vector3.SmoothDamp(transform.position, clamped_position + camera_offset, ref camera_velocity, camera_lag);
+            }
+            else {
+                transform.position = transform.position - camera_offset;
+                transform.position += (clamped_position - transform.position) * speed;
+                transform.position = transform.position + camera_offset;
+            }
         }
         
     }
