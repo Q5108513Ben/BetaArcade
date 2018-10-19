@@ -53,29 +53,61 @@ public class PlayerController : MonoBehaviour {
 
         if (transform.position.x < current_room.boundary_left) {
 
-            current_room = current_room.room_to_left;
-            current_camera.UpdateRoomBoundary(current_room);
+            foreach (var room in current_room.rooms_to_left) {
+
+                if (transform.position.y > room.boundary_bottom) {
+
+                    current_room = room;
+                    current_camera.UpdateRoomBoundary(room);
+                    break;
+
+                }
+            }
 
         } 
 
         else if (transform.position.x > current_room.boundary_right) {
 
-            current_room = current_room.room_to_right;
-            current_camera.UpdateRoomBoundary(current_room);
+            foreach (var room in current_room.rooms_to_right) {
+
+                if (transform.position.y > room.boundary_bottom) {
+
+                    current_room = room;
+                    current_camera.UpdateRoomBoundary(room);
+                    break;
+
+                }
+            }
 
         }
 
         else if (transform.position.y < current_room.boundary_bottom) {
 
-            current_room = current_room.room_below;
-            current_camera.UpdateRoomBoundary(current_room);
+            foreach (var room in current_room.rooms_below) {
+
+                if (transform.position.x > room.boundary_left) {
+
+                    current_room = room;
+                    current_camera.UpdateRoomBoundary(room);
+                    break;
+
+                }
+            }
 
         }
 
         else if (transform.position.y > current_room.boundary_top) {
 
-            current_room = current_room.room_above;
-            current_camera.UpdateRoomBoundary(current_room);
+            foreach (var room in current_room.rooms_above) {
+
+                if (transform.position.x > room.boundary_left) {
+
+                    current_room = room;
+                    current_camera.UpdateRoomBoundary(room);
+                    break;
+
+                }
+            }
 
         }
 
