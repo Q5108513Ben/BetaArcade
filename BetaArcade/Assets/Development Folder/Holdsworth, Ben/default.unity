@@ -625,6 +625,7 @@ MonoBehaviour:
     type: 2}
   objectToCollide: Core
   noOfObjectsToCreate: 5
+  player: {fileID: 0}
 --- !u!114 &1370330375
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -15,7 +15,8 @@ public class PickUp : MonoBehaviour {
 
         if (collider.CompareTag(objectToCollide)) {
 
-            Destroy(gameObject);
+            gameObject.GetComponent<MeshRenderer>().enabled = false;
+            gameObject.GetComponent<CapsuleCollider>().enabled = false;
 
         }
 
