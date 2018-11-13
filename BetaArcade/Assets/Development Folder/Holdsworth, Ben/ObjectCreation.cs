@@ -5,21 +5,36 @@ public class ObjectCreation : MonoBehaviour {
 
     public GameObject objectToCreate;
     public string objectToCollide;
-    public uint noOfObjectsToCreate = 1;
-    public CoreAttraction player;
+    public uint noOfObjectsToCreate;
 
-    public Vector2[] objectSpawnOffset = new Vector2[20];
+    public uint objectsPerRow;
+
+    public Vector2 constantOffset = new Vector2(-0.5f, 1.0f);
+
+    public Vector2[] objectSpawnOffset = new Vector2[100];
 
     public void Start() {
 
         objectToCreate.transform.position = transform.position;
 
-        float x = -2.5f;
-        float y = 2f;
+        float x = 0f;
+        float y = 0f;
 
-        for (int i = 0; i < objectSpawnOffset.Length; i++) {
+        float xOffset = 0.25f;
+        float yOffset = 0.5f;
 
-            objectSpawnOffset[i].Set(x, y);
+        for (int i = 1; i < objectSpawnOffset.Length; i++) {
+
+            objectSpawnOffset[i - 1].Set(x, y);
+
+            x += xOffset;
+
+            if (i % objectsPerRow == 0) {
+
+                y += yOffset;
+                x = 0f;
+
+            }
 
         }
 
@@ -30,16 +45,16 @@ public class ObjectCreation : MonoBehaviour {
         
         if (collider.CompareTag(objectToCollide)) {
 
-            float timeToWait = 0.2f;
+            float timeToWait = 0.1f;
 
             for (int i = 0; i < noOfObjectsToCreate; i++) {
 
                 GameObject newBot = Instantiate(objectToCreate);
-                newBot.transform.position.x += objectSpawnOffset[i].x;
+                newBot.transform.Translate(objectSpawnOffset[i].x + constantOffset.x, objectSpawnOffset[i].y + constantOffset.y, 0);
 
                 StartCoroutine(WaitOnSpawn(newBot, timeToWait));
 
-                timeToWait += 0.2f;
+                timeToWait += 0.05f;
 
             }
 
@@ -56,6 +71,7 @@ public class ObjectCreation : MonoBehaviour {
             yield return new WaitForSeconds(timeToWait);
 
             obj.tag = "Bot";
+            obj.GetComponent<Rigidbody>().useGravity = true;
             isTimerDone = true;
 
         }
@@ -63,3 +79,7 @@ public class ObjectCreation : MonoBehaviour {
     }
 
 }
+
+// This is pretty much done now, the only thing I would like to add is delaying the spawn time in a similar method to the WaitOnSpawn function.
+// Aside from that there is the refill station to do next which should be fairly similar. The Refill Station will have an additional variable
+// that tracks the max amount of bots 

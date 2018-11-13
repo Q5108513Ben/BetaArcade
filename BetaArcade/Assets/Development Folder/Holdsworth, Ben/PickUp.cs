@@ -4,6 +4,8 @@ public class PickUp : MonoBehaviour {
 
     public string objectToCollide;
 
+    private bool hasBeenConsumed = false;
+
 	// Update is called once per frame
 	void Update () {
 		
@@ -13,10 +15,15 @@ public class PickUp : MonoBehaviour {
 
     private void OnTriggerEnter(Collider collider) {
 
-        if (collider.CompareTag(objectToCollide)) {
+        if (!hasBeenConsumed) {
+            
+            if (collider.CompareTag(objectToCollide)) {
+                
+                gameObject.GetComponent<MeshRenderer>().enabled = false;
+                gameObject.GetComponent<CapsuleCollider>().enabled = false;
+                hasBeenConsumed = true;
 
-            gameObject.GetComponent<MeshRenderer>().enabled = false;
-            gameObject.GetComponent<CapsuleCollider>().enabled = false;
+            }
 
         }
 
