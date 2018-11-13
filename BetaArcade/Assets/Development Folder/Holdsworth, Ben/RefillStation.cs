@@ -1,17 +1,21 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ObjectCreation : MonoBehaviour {
+public class RefillStation : MonoBehaviour {
 
+    public CoreAttraction player;
     public GameObject objectToCreate;
-    public string objectToCollide;
-    public uint noOfObjectsToCreate;
+    public int refillMax;
+    public int maxCreatedBots;
 
-    public uint objectsPerRow;
-
+    public int objectsPerRow;
     public Vector2 constantOffset = new Vector2(-0.5f, 1.0f);
-
     public Vector2[] objectSpawnOffset = new Vector2[100];
+
+    private int noOfObjectsToCreate;
+    private bool hasRefilled = false;
+
+    public float cooldownTimer;
 
     public void Start() {
 
@@ -38,14 +42,30 @@ public class ObjectCreation : MonoBehaviour {
 
     }
 
-
     private void OnTriggerEnter(Collider collider) {
-        
-        if (collider.CompareTag(objectToCollide)) {
+
+        if (hasRefilled) { return;  }
+
+        if (collider.CompareTag("Core")) {
+
+            int currentBots = player.usedBots.Count;
+
+            if (currentBots > refillMax) { return; }
+
+            else {
+
+                noOfObjectsToCreate = refillMax - currentBots;
+
+                if (noOfObjectsToCreate > maxCreatedBots) {
+                    noOfObjectsToCreate = maxCreatedBots;
+                }
+
+            }
 
             float timeToWait = 0.1f;
 
-            for (int i = 0; i < noOfObjectsToCreate; i++) {
+            for (int i = 0; i < noOfObjectsToCreate; i++)
+            {
 
                 GameObject newBot = Instantiate(objectToCreate);
                 newBot.transform.Translate(objectSpawnOffset[i].x + constantOffset.x, objectSpawnOffset[i].y + constantOffset.y, 0);
@@ -56,15 +76,20 @@ public class ObjectCreation : MonoBehaviour {
 
             }
 
+            hasRefilled = true;
+            StartCoroutine(Cooldown(cooldownTimer));
+
         }
 
     }
 
-    IEnumerator WaitOnSpawn(GameObject obj, float timeToWait) {
+    IEnumerator WaitOnSpawn(GameObject obj, float timeToWait)
+    {
 
         bool isTimerDone = false;
 
-        while (!isTimerDone) {
+        while (!isTimerDone)
+        {
 
             yield return new WaitForSeconds(timeToWait);
 
@@ -73,7 +98,15 @@ public class ObjectCreation : MonoBehaviour {
             isTimerDone = true;
 
         }
-     
+
+    }
+
+    IEnumerator Cooldown(float timeToWait) {
+
+        yield return new WaitForSeconds(timeToWait);
+
+        hasRefilled = false;
+
     }
 
 }

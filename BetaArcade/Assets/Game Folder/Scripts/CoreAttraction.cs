@@ -13,7 +13,7 @@ public class CoreAttraction : MonoBehaviour {
     private GameObject player;
 
     [Tooltip("The list of bots used by the player.")]
-    private List<GameObject> usedBots;
+    public List<GameObject> usedBots;
 
     [Tooltip("The list of bots unused by the player, outside of the players sphere of influence.")]
     private List<GameObject> unusuedBots;
