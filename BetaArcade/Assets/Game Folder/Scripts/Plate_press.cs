@@ -9,6 +9,9 @@ public class Plate_press : MonoBehaviour {
 
     private bool hasLerped = false;
 
+    public GameObject startPoint;
+    public GameObject endPoint;
+
     private Vector3 startPosition;
     private Vector3 endPosition;
 
@@ -18,8 +21,8 @@ public class Plate_press : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        startPosition = transform.position;
-        endPosition = transform.position - new Vector3(0, 0.2f, 0);
+        startPosition = startPoint.transform.position;
+        endPosition = endPoint.transform.position;
 
         startTime = Time.time;
 
@@ -29,18 +32,17 @@ public class Plate_press : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-        if(Input.GetKeyUp(KeyCode.I))
+        //if player is on top of plate
+        if(GetComponentInChildren<Player_Detection>().playerDetected == true && (isActive == false))
         {
             isActive = true;
         }
 
+        if(GetComponentInChildren<Player_Detection>().playerDetected == false && (isActive == true) && (isToggle == true))
+        {
+            isActive = false;
+        }
         
-
-		//if player is on top of plate
-        //press down and make "isActive" true
-        //boolean of if it's press once or hold
-
-
         //Lerping once active
         if(isActive && !hasLerped)
         {
@@ -55,8 +57,25 @@ public class Plate_press : MonoBehaviour {
                 hasLerped = true;
         }
 
+        if(!isActive && hasLerped && isToggle)
+        {
+            float distCovered = (Time.time - startTime) * speed;
 
-        
+            float fracJourney = distCovered / journeyLength;
 
+            transform.position = Vector3.Lerp(endPosition, startPosition, fracJourney);
+
+            if (transform.position == startPosition)
+                hasLerped = false;
+        }
+
+        if (isActive && hasLerped)
+        {
+            GetComponent<Active_Sender>().isActive = true;
+        }
+        else
+        {
+            GetComponent<Active_Sender>().isActive = false;
+        }
 	}
 }

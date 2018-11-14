@@ -2,9 +2,9 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Activator : MonoBehaviour {
+public class Active_Sender : MonoBehaviour {
 
-    public bool isActive;
+    public bool isActive = false;
 
 	// Use this for initialization
 	void Start () {

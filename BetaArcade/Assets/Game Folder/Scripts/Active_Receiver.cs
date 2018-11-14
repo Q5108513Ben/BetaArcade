@@ -2,13 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Object_Activation : MonoBehaviour {
+public class Active_Receiver : MonoBehaviour {
 
     public GameObject[] requiredObjects;
 
-    public bool isActive;
-
-    public bool isOpen;
+    public bool isActive = false;
 
 	// Use this for initialization
 	void Start () {
@@ -17,14 +15,18 @@ public class Object_Activation : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		
+
         foreach(GameObject obj in requiredObjects)
         {
-            
-
-
+            if(obj.GetComponent<Active_Sender>().isActive == false)
+            {
+                isActive = false;
+                break;
+            }
+            else
+            {
+                isActive = true;
+            }
         }
-
-
 	}
 }
