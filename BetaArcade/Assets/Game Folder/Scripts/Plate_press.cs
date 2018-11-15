@@ -19,13 +19,14 @@ public class Plate_press : MonoBehaviour {
     private float journeyLength;
     private float speed = 1.0f;
 
+    private bool thing = false;
+
     // Use this for initialization
     void Start () {
         startPosition = startPoint.transform.position;
         endPosition = endPoint.transform.position;
 
-        startTime = Time.time;
-
+        
         journeyLength = Vector3.Distance(startPosition, endPosition);
     }
 	
@@ -46,6 +47,11 @@ public class Plate_press : MonoBehaviour {
         //Lerping once active
         if(isActive && !hasLerped)
         {
+            if(!thing)
+            {
+                startTime = Time.time;
+                thing = true;
+            }
 
             float distCovered = (Time.time - startTime) * speed;
 
@@ -53,12 +59,21 @@ public class Plate_press : MonoBehaviour {
 
             transform.position = Vector3.Lerp(startPosition, endPosition, fracJourney);
 
-            if(transform.position == endPosition)
+            if (transform.position == endPosition)
+            {
                 hasLerped = true;
+                thing = false;
+            }
         }
 
         if(!isActive && hasLerped && isToggle)
         {
+            if (!thing)
+            {
+                startTime = Time.time;
+                thing = true;
+            }
+
             float distCovered = (Time.time - startTime) * speed;
 
             float fracJourney = distCovered / journeyLength;
@@ -66,7 +81,10 @@ public class Plate_press : MonoBehaviour {
             transform.position = Vector3.Lerp(endPosition, startPosition, fracJourney);
 
             if (transform.position == startPosition)
+            {
                 hasLerped = false;
+                thing = false;
+            }
         }
 
         if (isActive && hasLerped)
