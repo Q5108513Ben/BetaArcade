@@ -2,7 +2,11 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Plate_press : MonoBehaviour {
+public class Weighted_Plate_Press : MonoBehaviour {
+
+    public CoreAttraction player;
+
+    public int minBotsRequired = 0;
 
     public bool isToggle;
     public bool isActive;
@@ -24,30 +28,36 @@ public class Plate_press : MonoBehaviour {
     private bool hasTimeStarted = false;
 
     // Use this for initialization
-    void Start () {
+    void Start()
+    {
         startPosition = startPoint.transform.position;
         endPosition = endPoint.transform.position;
         journeyLength = Vector3.Distance(startPosition, endPosition);
     }
-	
-	// Update is called once per frame
-	void Update () {
+
+    // Update is called once per frame
+    void Update()
+    {
 
         //if player is on top of plate
-        if(GetComponentInChildren<Player_Detection>().playerDetected && !isActive)
+        if (GetComponentInChildren<Player_Detection>().playerDetected && !isActive && player.usedBots.Count >= minBotsRequired)
         {
             isActive = true;
         }
 
-        if(!GetComponentInChildren<Player_Detection>().playerDetected && isActive && isToggle)
+        if (!GetComponentInChildren<Player_Detection>().playerDetected && isActive && isToggle)
         {
             isActive = false;
         }
-        
-        //Lerping once active
-        if(isActive && !hasLerped)
+        else if(GetComponentInChildren<Player_Detection>().playerDetected  && player.usedBots.Count < minBotsRequired)
         {
-            if(!hasTimeStarted)
+            isActive = false;
+        }
+
+        //Lerping once active
+        if (isActive && !hasLerped)
+        {
+            if (!hasTimeStarted)
             {
                 startTime = Time.time;
                 hasTimeStarted = true;
@@ -66,7 +76,7 @@ public class Plate_press : MonoBehaviour {
             }
         }
 
-        if(!isActive && hasLerped && isToggle)
+        if (!isActive && hasLerped && isToggle)
         {
             if (!hasTimeStarted)
             {
@@ -97,5 +107,6 @@ public class Plate_press : MonoBehaviour {
             GetComponent<Active_Sender>().isActive = false;
             this.transform.parent.Find("Light").gameObject.GetComponent<Light_Switch>().isOn = false;
         }
-	}
+    }
+
 }
