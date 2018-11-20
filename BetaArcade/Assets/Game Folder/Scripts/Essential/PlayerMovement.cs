@@ -37,7 +37,7 @@ public class PlayerMovement : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
-        if (Input.GetKeyDown(KeyCode.W) && !isJumping)
+        if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
         {
             rb.velocity = Vector3.up * jumpVelocity;
             isJumping = true;
@@ -60,7 +60,7 @@ public class PlayerMovement : MonoBehaviour {
         {
             rb.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
-        else if (rb.velocity.y > 0 && !Input.GetKey(KeyCode.W))
+        else if (rb.velocity.y > 0 && !Input.GetKey(KeyCode.Space))
         {
             rb.velocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
         }
