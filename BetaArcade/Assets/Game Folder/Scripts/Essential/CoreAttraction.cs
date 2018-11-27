@@ -178,7 +178,7 @@ public class CoreAttraction : MonoBehaviour {
 
         #region KEY_PRESS_CHECKS
 
-        if (Input.GetKey(KeyCode.LeftShift))
+        if (Input.GetKey(KeyCode.Space))
         {
             //isAttracting = !isAttracting;
             if (maxRad > attractionDeductionRate)
@@ -187,7 +187,7 @@ public class CoreAttraction : MonoBehaviour {
                 maxRad = 0;
         }
 
-        if (Input.GetKeyUp(KeyCode.LeftShift))
+        if (Input.GetKeyUp(KeyCode.Space))
             maxRad = absoluteMaxRad;
 
 
@@ -205,29 +205,22 @@ public class CoreAttraction : MonoBehaviour {
             //BALL SANDWICH
             if (isSolid)
             {
-                float tempPRad = 0.5f;
-                float tempCRad = 0.5f;
-
-                if (usedBots.Count >= 100)
-                {
-                    tempPRad = 3f;
-                    tempCRad = 2.5f;
-                }
-                else if(usedBots.Count < 0)
-                {
-                    //tempPRad = usedBots.Count / 
-                }
-
-
-
-                player.GetComponent<SphereCollider>().radius = tempPRad;
-                this.GetComponent<SphereCollider>().radius = tempCRad;
+                player.GetComponent<SphereCollider>().radius = 3f;
+                this.GetComponent<SphereCollider>().radius = 2f;
             }
             else
             {
                 player.GetComponent<SphereCollider>().radius = 0.5f;
                 this.GetComponent<SphereCollider>().radius = 0.5f;
             }
+        }
+
+
+
+        //Debug button
+        if(Input.GetKeyUp(KeyCode.J))
+        {
+            Debug.Log(this.GetComponent<Rigidbody>().velocity.magnitude);
         }
 
         #endregion
