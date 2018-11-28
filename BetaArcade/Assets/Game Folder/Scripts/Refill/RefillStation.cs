@@ -48,7 +48,7 @@ public class RefillStation : MonoBehaviour {
 
         if (collider.CompareTag("Core")) {
 
-            int currentBots = player.usedBots.Count;
+            int currentBots = player.usedBots.Count + player.unusuedBots.Count;
 
             if (currentBots > refillMax) { return; }
 
