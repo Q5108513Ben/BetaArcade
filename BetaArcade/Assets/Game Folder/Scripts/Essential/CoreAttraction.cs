@@ -178,7 +178,7 @@ public class CoreAttraction : MonoBehaviour {
 
         #region KEY_PRESS_CHECKS
 
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKey(KeyCode.LeftShift))
         {
             //isAttracting = !isAttracting;
             if (maxRad > attractionDeductionRate)
@@ -187,7 +187,7 @@ public class CoreAttraction : MonoBehaviour {
                 maxRad = 0;
         }
 
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetKeyUp(KeyCode.LeftShift))
             maxRad = absoluteMaxRad;
 
 
@@ -251,13 +251,6 @@ public class CoreAttraction : MonoBehaviour {
 
         }
 
-
-
-        //Debug button
-        if (Input.GetKeyUp(KeyCode.J))
-        {
-            Debug.Log(this.GetComponent<Rigidbody>().velocity.magnitude);
-        }
 
         #endregion
 

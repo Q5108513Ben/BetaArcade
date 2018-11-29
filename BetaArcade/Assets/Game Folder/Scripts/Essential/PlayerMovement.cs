@@ -22,6 +22,8 @@ public class PlayerMovement : MonoBehaviour {
     [Range(1, 100)]
     public float speedVelocity = 10;
 
+    public float maxVelocity = 20;
+
 
     private Rigidbody rb;
 
@@ -37,7 +39,7 @@ public class PlayerMovement : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
-        if (Input.GetKeyDown(KeyCode.W) && !isJumping)
+        if (Input.GetKeyDown(KeyCode.Space) && !isJumping)
         {
             rb.velocity = Vector3.up * jumpVelocity;
             isJumping = true;
@@ -51,16 +53,25 @@ public class PlayerMovement : MonoBehaviour {
             initialUpdate = true;
         }
 
+
         var x = Input.GetAxis("Horizontal") * Time.deltaTime * speedVelocity;
+        //var x = Input.GetAxis("Horizontal") * speedVelocity;
 
-        transform.Translate(x, 0, 0);
-        //rb.velocity += Vector3.right * x;
+        //Debug.Log(x);
 
+        //transform.Translate(x, 0, 0);
+        //rb.AddForce(x, 0, 0, ForceMode.VelocityChange);
+        if ((rb.velocity.x < maxVelocity) && (rb.velocity.x > -maxVelocity))
+            rb.velocity += Vector3.right * x;
+
+        //Debug.Log(rb.velocity.x);
+
+        //Jump velocity handling
         if (rb.velocity.y < 0)
         {
             rb.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
-        else if (rb.velocity.y > 0 && !Input.GetKey(KeyCode.W))
+        else if (rb.velocity.y > 0 && !Input.GetKey(KeyCode.Space))
         {
             rb.velocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
         }
