@@ -59,10 +59,10 @@ public class PlayerMovement : MonoBehaviour {
 
         //Debug.Log(x);
 
-        //transform.Translate(x, 0, 0);
+        transform.Translate(x, 0, 0);
         //rb.AddForce(x, 0, 0, ForceMode.VelocityChange);
-        if ((rb.velocity.x < maxVelocity) && (rb.velocity.x > -maxVelocity))
-            rb.velocity += Vector3.right * x;
+        //if ((rb.velocity.x < maxVelocity) && (rb.velocity.x > -maxVelocity))
+            //rb.velocity += Vector3.right * x;
 
         //Debug.Log(rb.velocity.x);
 

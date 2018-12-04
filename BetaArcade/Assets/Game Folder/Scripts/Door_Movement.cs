@@ -23,6 +23,8 @@ public class Door_Movement : MonoBehaviour {
 
     private bool hasTimeStarted = false;
 
+    private Animator anim;
+    
     private enum DoorType
     {
         RequiresActivation,
@@ -38,36 +40,55 @@ public class Door_Movement : MonoBehaviour {
         startPosition = startPoint.transform.position;
         endPosition = endPoint.transform.position;
         journeyLength = Vector3.Distance(startPosition, endPosition);
+        anim = this.GetComponent<Animator>();
+        
     }
 
     // Update is called once per frame
     void Update () {
-		if(!isActive && GetComponentInParent<Active_Receiver>().isActive && doorType == DoorType.RequiresActivation)
+		if(!isActive && 
+            GetComponentInParent<Active_Receiver>().isActive && 
+            doorType == DoorType.RequiresActivation)
         {
             isActive = true;
         }
-        else if(!isActive && GetComponentInParent<Player_Detection>().playerDetected && doorType == DoorType.RequiresPlayer)
+        else if(!isActive && 
+            GetComponentInParent<Player_Detection>().playerDetected && 
+            doorType == DoorType.RequiresPlayer)
         {
             isActive = true;
         }
-        else if(!isActive && GetComponentInParent<Player_Detection>().playerDetected && GetComponentInParent<Active_Receiver>().isActive && doorType == DoorType.RequiresActivationAndPlayer)
+        else if(!isActive && 
+            GetComponentInParent<Player_Detection>().playerDetected && 
+            GetComponentInParent<Active_Receiver>().isActive && 
+            doorType == DoorType.RequiresActivationAndPlayer)
         {
             isActive = true;
         }
 
-        if((isActive && isToggle && !GetComponentInParent<Active_Receiver>().isActive) && doorType == DoorType.RequiresActivation)
+        if((isActive && 
+            isToggle && 
+            !GetComponentInParent<Active_Receiver>().isActive) && 
+            doorType == DoorType.RequiresActivation)
         {
             isActive = false;
         }
-        else if(isActive && !GetComponentInParent<Player_Detection>().playerDetected && doorType == DoorType.RequiresPlayer)
+        else if(isActive && 
+            !GetComponentInParent<Player_Detection>().playerDetected && 
+            doorType == DoorType.RequiresPlayer)
         {
             isActive = false;
         }
-        else if(isActive && doorType == DoorType.RequiresActivationAndPlayer && (!GetComponentInParent<Player_Detection>().playerDetected || !GetComponentInParent<Active_Receiver>().isActive))
+        else if(isActive && 
+            doorType == DoorType.RequiresActivationAndPlayer && 
+            (!GetComponentInParent<Player_Detection>().playerDetected || !GetComponentInParent<Active_Receiver>().isActive))
         {
             isActive = false;
         }
 
+        anim.SetBool("DoorOpen", isActive);
+
+        /*
         //Lerping once active
         if (isActive && !hasLerped)
         {
@@ -133,7 +154,7 @@ public class Door_Movement : MonoBehaviour {
                 hasTimeStarted = false;
             }
         }
-
+        */
 
     }
 }
