@@ -13,14 +13,14 @@ public class PlayerMovement : MonoBehaviour {
 
     [Tooltip("Amount of multiplicitive jump height of the player.")]
     [Range(1, 10)]
-    public float jumpVelocity;
+    public float jumpVelocity = 5;
 
     public float fallMultiplier = 2.5f;
     public float lowJumpMultiplier = 2f;
 
     [Tooltip("Amount of multiplicitive speed of the player.")]
     [Range(1, 100)]
-    public float speedVelocity;
+    public float speedVelocity = 10;
 
 
     private Rigidbody rb;
