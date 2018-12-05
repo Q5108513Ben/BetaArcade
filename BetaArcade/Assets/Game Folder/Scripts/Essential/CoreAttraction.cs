@@ -196,11 +196,6 @@ public class CoreAttraction : MonoBehaviour {
         {
             isSolid = !isSolid;
 
-            Debug.Log("Player Radius before: " + player.GetComponent<SphereCollider>().radius);
-            Debug.Log("Core Radius before: " + this.GetComponent<SphereCollider>().radius);
-
-            Debug.Log("Number of bots: " + usedBots.Count);
-
             foreach (GameObject currBot in usedBots)
             {
                 currBot.GetComponent<Rigidbody>().useGravity = !currBot.GetComponent<Rigidbody>().useGravity;
@@ -210,51 +205,20 @@ public class CoreAttraction : MonoBehaviour {
             //BALL SANDWICH
             if (isSolid)
             {
-                float tempPRad = 0.5f;
-                float tempCRad = 0.5f;
-
-                int numBots = usedBots.Count;
-
-                if(numBots >= 100)
-                {
-                    tempPRad = 3f;
-                    tempCRad = 2.8f;
-                }
-                else if(numBots == 0)
-                {
-                    tempPRad = 0.5f;
-                    tempCRad = 0.5f;
-                }
-                else
-                {
-                    Debug.Log("This should be hit!");
-                    tempPRad = 2.5f * (numBots / 100) + 0.7f;
-                    tempCRad = 2.5f * (numBots / 100) + 0.5f;
-                    Debug.Log("TempPRad: " + tempPRad);
-                    Debug.Log("TempCRad: " + tempCRad);
-                }
-
-
-
-
-                player.GetComponent<SphereCollider>().radius = tempPRad;
-                this.GetComponent<SphereCollider>().radius = tempCRad;
+                player.GetComponent<SphereCollider>().radius = 3f;
+                this.GetComponent<SphereCollider>().radius = 2f;
             }
             else
             {
                 player.GetComponent<SphereCollider>().radius = 0.5f;
                 this.GetComponent<SphereCollider>().radius = 0.5f;
             }
-
-            Debug.Log("Player Radius after: " + player.GetComponent<SphereCollider>().radius);
-            Debug.Log("Core Radius after: " + this.GetComponent<SphereCollider>().radius);
-
         }
 
 
 
         //Debug button
-        if (Input.GetKeyUp(KeyCode.J))
+        if(Input.GetKeyUp(KeyCode.J))
         {
             Debug.Log(this.GetComponent<Rigidbody>().velocity.magnitude);
         }
