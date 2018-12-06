@@ -1,0 +1,38 @@
+if (Input.GetKeyDown(KeyCode.W) && !isJumping)
+        {
+            rb.velocity = Vector3.up * jumpVelocity;
+            isJumping = true;
+        }
+        
+        // Had to stick this here instead of in the start function because Unity
+        // likes to call Start() in random orders leading to 'current_room' being
+        // uninitialised sometimes.
+        if (!initialUpdate) {
+            current_camera.UpdateRoomBoundary(current_room);
+            initialUpdate = true;
+        }
+
+        var x = Input.GetAxis("Horizontal") * Time.deltaTime * speedVelocity;
+
+        transform.Translate(x, 0, 0);
+        //rb.velocity += Vector3.right * x;
+
+        if (rb.velocity.y <= 0)
+        {
+            rb.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
+            /*
+            if (rb.velocity.y >= -0.1 && rb.velocity.y <= 0) {
+                isJumping = false;
+            }
+            */
+        }
+
+        if (isJumping && Input.GetKeyDown(KeyCode.W))
+        {
+            rb.velocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
+        }
+
+        if (isJumping && Input.GetKeyUp(KeyCode.W))
+        {
+            isJumping = false;
+        }

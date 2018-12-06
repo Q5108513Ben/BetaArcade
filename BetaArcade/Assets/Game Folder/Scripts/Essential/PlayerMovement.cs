@@ -37,18 +37,20 @@ public class PlayerMovement : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
+        // Had to stick this here instead of in the start function because Unity
+        // likes to call Start() in random orders leading to 'current_room' being
+        // uninitialised sometimes.
+        if (!initialUpdate)
+        {
+            current_camera.UpdateRoomBoundary(current_room);
+            initialUpdate = true;
+        }
+
+
         if (Input.GetKeyDown(KeyCode.W) && !isJumping)
         {
             rb.velocity = Vector3.up * jumpVelocity;
             isJumping = true;
-        }
-
-        // Had to stick this here instead of in the start function because Unity
-        // likes to call Start() in random orders leading to 'current_room' being
-        // uninitialised sometimes.
-        if (!initialUpdate) {
-            current_camera.UpdateRoomBoundary(current_room);
-            initialUpdate = true;
         }
 
         var x = Input.GetAxis("Horizontal") * Time.deltaTime * speedVelocity;
