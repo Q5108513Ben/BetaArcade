@@ -15,7 +15,7 @@ public class PlayerMovement : MonoBehaviour {
     [Range(1, 10)]
     public float jumpVelocity = 5;
 
-    public float fallMultiplier = 2.5f;
+    public float fallMultiplier = 2f;
     public float lowJumpMultiplier = 2f;
 
     [Tooltip("Amount of multiplicitive speed of the player.")]
@@ -25,7 +25,8 @@ public class PlayerMovement : MonoBehaviour {
 
     private Rigidbody rb;
 
-    private bool isJumping = false;
+    public bool isJumping = false;
+    public bool isFalling = false;
 
     bool initialUpdate = false;
 
@@ -46,34 +47,45 @@ public class PlayerMovement : MonoBehaviour {
             initialUpdate = true;
         }
 
+        // Horizontal movement
+        var x = Input.GetAxis("Horizontal") * Time.deltaTime * speedVelocity;
 
-        if (Input.GetKeyDown(KeyCode.W) && !isJumping)
+        transform.Translate(x, 0, 0);
+
+        // Vertical movement
+        // Check for player input
+        if (Input.GetKey(KeyCode.W) && !isJumping && !isFalling)
         {
             rb.velocity = Vector3.up * jumpVelocity;
             isJumping = true;
         }
-
-        var x = Input.GetAxis("Horizontal") * Time.deltaTime * speedVelocity;
-
-        transform.Translate(x, 0, 0);
-        //rb.velocity += Vector3.right * x;
-
-        if (rb.velocity.y < 0)
-        {
-            rb.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
-        }
-        else if (rb.velocity.y > 0 && !Input.GetKey(KeyCode.W))
-        {
-            rb.velocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
-        }
-        else if (rb.velocity.y == 0)
+        else if (Input.GetKeyUp(KeyCode.W) && isJumping)
         {
             isJumping = false;
         }
-        
-        
 
+        // Check if the player is falling
+        if (rb.velocity.y <= -0.3)
+        {
+            isJumping = false;
+            isFalling = true;
+        }
+        else if (rb.velocity.y >= -0.3)
+        {
+            isFalling = false;
+        }
 
+        // Adjust velocity based on previous info
+        if (rb.velocity.y > 0 & !isJumping)
+        { 
+            rb.velocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
+        }
+        else if (isFalling)
+        {
+            rb.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
+        }
+
+        
 
         #region Room Boundary Checks
 

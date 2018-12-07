@@ -509,6 +509,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   player: {fileID: 1467944696}
   usedBots: []
+  unusuedBots: []
   minRad: 0.1
   maxRad: 5
   absoluteMaxRad: 5
@@ -1392,7 +1393,7 @@ MonoBehaviour:
   fade_in_speed: 10
   fade_out_speed: 20
   fade_blackout_time: 0.1
-  maxSpeed: 0
+  maxSpeed: 0.1
   maxCameraEnabled: 0
 --- !u!222 &1227661504
 CanvasRenderer:
@@ -1522,7 +1523,7 @@ Rigidbody:
   m_IsKinematic: 0
   m_Interpolate: 0
   m_Constraints: 120
-  m_CollisionDetection: 0
+  m_CollisionDetection: 1
 --- !u!114 &1467944698
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1537,9 +1538,11 @@ MonoBehaviour:
   current_camera: {fileID: 1227661503}
   current_room: {fileID: 1725301267}
   jumpVelocity: 5
-  fallMultiplier: 2.5
+  fallMultiplier: 2
   lowJumpMultiplier: 2
-  speedVelocity: 8
+  speedVelocity: 6
+  isJumping: 0
+  isFalling: 0
 --- !u!23 &1467944699
 MeshRenderer:
   m_ObjectHideFlags: 0
