@@ -25,6 +25,7 @@ public class PlayerMovement : MonoBehaviour {
 
     private Rigidbody rb;
 
+    public bool jumpHeld = false;
     public bool isJumping = false;
     public bool isFalling = false;
 
@@ -58,10 +59,12 @@ public class PlayerMovement : MonoBehaviour {
         {
             rb.velocity = Vector3.up * jumpVelocity;
             isJumping = true;
+            jumpHeld = true;
         }
         else if (Input.GetKeyUp(KeyCode.W) && isJumping)
         {
-            isJumping = false;
+            //isJumping = false;
+            jumpHeld = false;
         }
 
         // Check if the player is falling
@@ -76,7 +79,7 @@ public class PlayerMovement : MonoBehaviour {
         }
 
         // Adjust velocity based on previous info
-        if (rb.velocity.y > 0 & !isJumping)
+        if (rb.velocity.y > 0 && !jumpHeld)
         { 
             rb.velocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
         }
