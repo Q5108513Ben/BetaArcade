@@ -88,8 +88,6 @@ public class PlayerMovement : MonoBehaviour {
             rb.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
 
-        
-
         #region Room Boundary Checks
 
         if (transform.position.x < current_room.boundary_left)
