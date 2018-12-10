@@ -13,6 +13,8 @@ public class CameraController : MonoBehaviour {
     [Tooltip("How far behind the camera lags when the player moves around.")]
     public float camera_lag;
 
+    public RoomBoundary mainMenu;
+
     private Vector3 clamped_position;
     private Vector3 camera_velocity = Vector3.zero;
 
@@ -93,6 +95,18 @@ public class CameraController : MonoBehaviour {
         xMinValue = room.boundary_left + (camera_width / 2);
         yMaxValue = room.boundary_top - (camera_height / 2);
         yMinValue = room.boundary_bottom + (camera_height / 2);
+
+        if (room.name == "Menu Boundary") {
+
+            mainMenu.GetComponent<MainMenu>().EnableUI();
+        
+        }
+
+        else {
+
+            mainMenu.GetComponent<MainMenu>().DisableUI();
+
+        }
 
     }
 

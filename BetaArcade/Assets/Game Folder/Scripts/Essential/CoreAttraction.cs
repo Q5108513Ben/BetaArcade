@@ -119,7 +119,10 @@ public class CoreAttraction : MonoBehaviour {
                     Vector3 dir = (corePosition - currentBotPosition).normalized;
                     //float force = forceMultiplier * smoothStep(minRad, maxRad, dist);
                     float force = forceMultiplier;
+                    float distLinear = (dist / maxRad);
+
                     bot.GetComponent<Rigidbody>().AddForce(dir * force * Time.fixedDeltaTime);
+                    // Multiply by distLinear in order to add distance attenuation on the force strength.
                 }
 
             }
