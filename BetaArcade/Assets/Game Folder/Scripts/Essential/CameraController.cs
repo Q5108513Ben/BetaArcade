@@ -104,8 +104,16 @@ public class CameraController : MonoBehaviour {
 
         else {
 
-            mainMenu.GetComponent<MainMenu>().DisableUI();
+            if (mainMenu != null) {
 
+                if (mainMenu.GetComponent<MainMenu>() != null) {
+
+                    mainMenu.GetComponent<MainMenu>().DisableUI();
+
+                }
+
+            }
+           
         }
 
     }
