@@ -25,28 +25,28 @@ public class Door_Movement : MonoBehaviour {
 
     private Animator anim;
     
-    private enum DoorType
+    public enum DoorType
     {
         RequiresActivation,
         RequiresPlayer,
         RequiresActivationAndPlayer
     }
 
-    [SerializeField]
-    private DoorType doorType = DoorType.RequiresPlayer;
+    public DoorType doorType = DoorType.RequiresPlayer;
 
     // Use this for initialization
     void Start () {
         startPosition = startPoint.transform.position;
         endPosition = endPoint.transform.position;
         journeyLength = Vector3.Distance(startPosition, endPosition);
-        anim = this.GetComponent<Animator>();
-        
     }
 
     // Update is called once per frame
-    void Update () {
-		if(!isActive && 
+    void FixedUpdate () {
+
+        #region Active_Checker
+
+        if(!isActive && 
             GetComponentInParent<Active_Receiver>().isActive && 
             doorType == DoorType.RequiresActivation)
         {
@@ -86,7 +86,11 @@ public class Door_Movement : MonoBehaviour {
             isActive = false;
         }
 
-        anim.SetBool("DoorOpen", isActive);
+        #endregion
+
+
+
+        #region justcomments
 
         /*
         //Lerping once active
@@ -155,6 +159,6 @@ public class Door_Movement : MonoBehaviour {
             }
         }
         */
-
+        #endregion
     }
 }
