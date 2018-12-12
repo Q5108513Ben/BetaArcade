@@ -17,6 +17,8 @@ public class RefillStation : MonoBehaviour {
 
     public float cooldownTimer;
 
+    public BotCounterWidget counter;
+
     // I am planning on adding a UI number above all refill stations that represents the maximum amount of 
     // bots the player can go up to through the repeated use of the refill station. 
 
@@ -89,6 +91,12 @@ public class RefillStation : MonoBehaviour {
 
             hasRefilled = true;
             StartCoroutine(Cooldown(cooldownTimer));
+
+            if (counter != null) {
+
+                counter.SetCounter((currentBots + noOfObjectsToCreate) / 100f);
+
+            }
 
         }
 
