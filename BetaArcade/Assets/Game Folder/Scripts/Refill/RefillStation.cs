@@ -17,6 +17,17 @@ public class RefillStation : MonoBehaviour {
 
     public float cooldownTimer;
 
+    // I am planning on adding a UI number above all refill stations that represents the maximum amount of 
+    // bots the player can go up to through the repeated use of the refill station. 
+
+    // To do this we could create a canvas that covers the entire world. Each refill station will have a reference
+    // to the canvas, and upon creation will add a text element to the UI. Its position will be the position of the 
+    // refill station plus an offset. The text added to the screen will be the int 'maxCreatedBots', we can just 
+    // convert this to a string and add that as the Text element's text property. 
+
+    // If I get this working I will talk to Ryan about implementing the same feature with the pressure plates so
+    // that the user can clearly see how many bots are required to activate the plate.
+
     public void Start() {
 
         float x = 0f;
