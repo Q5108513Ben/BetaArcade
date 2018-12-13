@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 
 [RequireComponent(typeof(Image))]
 public class BotCounterWidget : MonoBehaviour {
@@ -23,15 +24,34 @@ public class BotCounterWidget : MonoBehaviour {
 
 	public void SetCounter(float value) {
 
-        image.fillAmount = value;
+        if (value > 1) { value = 1; }
+
+        StartCoroutine(IncreaseFill(value));
+
         text.UpdateValue(value * 100);
 
     }
 
     public void AddCounter(float value) {
 
-        text.UpdateValue((image.fillAmount + value) * 100);
-        image.fillAmount += value;
+        float maxValue = image.fillAmount + value;
+        if (maxValue > 1) { maxValue = 1; }
+
+        StartCoroutine(IncreaseFill(maxValue));
+        int newValue = (int)((image.fillAmount * 100) + (value * 100));
+
+        text.UpdateValue(newValue);
+
+    }
+
+    IEnumerator IncreaseFill(float maxValue) {
+
+        while (image.fillAmount < maxValue) {
+
+            image.fillAmount += 0.2f * Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+
+        }
 
     }
 
