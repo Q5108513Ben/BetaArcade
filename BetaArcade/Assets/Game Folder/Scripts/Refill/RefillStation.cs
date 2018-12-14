@@ -66,7 +66,7 @@ public class RefillStation : MonoBehaviour {
             if (currentBots > refillMax) { return; }
 
             else {
-
+                //max is a sexy boi
                 noOfObjectsToCreate = refillMax - currentBots;
 
                 if (noOfObjectsToCreate > maxCreatedBots) {
