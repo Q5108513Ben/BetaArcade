@@ -6,8 +6,8 @@ public class Moving_Platform : MonoBehaviour {
 
     public float speed = 1.0f;
 
-    private bool m_Started = false;
-    private Vector3 m_Velocity;
+    private bool hasStarted = true;
+    private Vector3 velocity;
 
     public enum MovementType
     {
@@ -24,11 +24,11 @@ public class Moving_Platform : MonoBehaviour {
 
     public float[] waitTimes = new float[1];
 
-    private int m_Current = 0;
-    private int m_Next = 0;
-    private int m_Dir = 1;
+    private int currentPoint = 0;
+    private int nextPoint = 0;
+    private int direction = 1;
 
-    private float m_WaitTime = -1.0f;
+    private float waitTime = -1.0f;
 
     private Rigidbody rb;
 
@@ -36,11 +36,11 @@ public class Moving_Platform : MonoBehaviour {
     void Start () {
         
         rb = GetComponent<Rigidbody>();
-        m_Current = 0;
-        m_Dir = 1;
-        m_Next = wayPoints.Length > 1 ? 1 : 0;
+        currentPoint = 0;
+        direction = 1;
+        nextPoint = wayPoints.Length > 1 ? 1 : 0;
 
-        m_WaitTime = waitTimes[0];
+        waitTime = waitTimes[0];
         
     }
 
@@ -91,16 +91,16 @@ public class Moving_Platform : MonoBehaviour {
 
         
 
-        if (!m_Started)
+        if (!hasStarted)
             return;
 
         //no need to update we have a single node in the path
-        if (m_Current == m_Next)
+        if (currentPoint == nextPoint)
             return;
 
-        if (m_WaitTime > 0)
+        if (waitTime > 0)
         {
-            m_WaitTime -= Time.deltaTime;
+            waitTime -= Time.deltaTime;
             return;
         }
 
@@ -109,73 +109,73 @@ public class Moving_Platform : MonoBehaviour {
         while (distanceToGo > 0)
         {
 
-            Vector3 direction = wayPoints[m_Next] - transform.position;
+            Vector3 direction = wayPoints[nextPoint] - transform.position;
 
             float dist = distanceToGo;
             if (direction.sqrMagnitude < dist * dist)
             {  
                 dist = direction.magnitude;
 
-                m_Current = m_Next;
+                currentPoint = nextPoint;
 
-                m_WaitTime = waitTimes[m_Current];
+                waitTime = waitTimes[currentPoint];
 
-                if (m_Dir > 0)
+                if (this.direction > 0)
                 {
-                    m_Next += 1;
-                    if (m_Next >= wayPoints.Length)
+                    nextPoint += 1;
+                    if (nextPoint >= wayPoints.Length)
                     { 
 
                         switch (movementType)
                         {
                             case MovementType.Back_and_Forth:
-                                m_Next = wayPoints.Length - 2;
-                                m_Dir = -1;
+                                nextPoint = wayPoints.Length - 2;
+                                this.direction = -1;
                                 break;
                             case MovementType.Loop:
-                                m_Next = 0;
+                                nextPoint = 0;
                                 break;
                             case MovementType.Once:
-                                m_Next -= 1;
-                                m_Started = false;
+                                nextPoint -= 1;
+                                hasStarted = false;
                                 break;
                         }
                     }
                 }
                 else
                 {
-                    m_Next -= 1;
-                    if (m_Next < 0)
+                    nextPoint -= 1;
+                    if (nextPoint < 0)
                     { //reached the beginning again
 
                         switch (movementType)
                         {
                             case MovementType.Back_and_Forth:
-                                m_Next = 1;
-                                m_Dir = 1;
+                                nextPoint = 1;
+                                this.direction = 1;
                                 break;
                             case MovementType.Loop:
-                                m_Next = wayPoints.Length - 1;
+                                nextPoint = wayPoints.Length - 1;
                                 break;
                             case MovementType.Once:
-                                m_Next += 1;
-                                m_Started = false;
+                                nextPoint += 1;
+                                hasStarted = false;
                                 break;
                         }
                     }
                 }
             }
 
-            m_Velocity = direction.normalized * dist;
+            velocity = direction.normalized * dist;
 
             //transform.position +=  direction.normalized * dist;
-            rb.MovePosition(rb.position + m_Velocity);
+            rb.MovePosition(rb.position + velocity);
             //We remove the distance we moved. That way if we didn't had enough distance to the next goal, we will do a new loop to finish
             //the remaining distance we have to cover this frame toward the new goal
             distanceToGo -= dist;
 
             // we have some wait time set, that mean we reach a point where we have to wait. So no need to continue to move the platform, early exit.
-            if (m_WaitTime > 0.001f)
+            if (waitTime > 0.001f)
                 break;
         }
     }
