@@ -6,7 +6,7 @@ using System.Collections;
 public class BotCounterValue : MonoBehaviour {
 
     Text text;
-    private Coroutine co;
+    public int currentValue = 0;
 
     void Start() {
 
@@ -16,36 +16,55 @@ public class BotCounterValue : MonoBehaviour {
 
     public void UpdateValue(float value) {
 
-        if (co != null) {
+        int valueToIncrementBy = (int)value - currentValue;
 
-            //StopCoroutine(co);
-
+        if (valueToIncrementBy > 0)
+        {
+            StartCoroutine(IncrementCounter(valueToIncrementBy));
+        }
+        else
+        {
+            StartCoroutine(DecrementCounter(valueToIncrementBy));
         }
 
-        co = StartCoroutine(IncrementCounter(value));
+        
 
     }
 
-    IEnumerator IncrementCounter(float value) {
+    IEnumerator IncrementCounter(int value) {
 
-        float currentValue = 0;
+        int index = 0;
 
-        for (int i = 0; i < text.text.Length; i++) {
+        while (index < value) {
 
-            char letter = text.text[i];
-            currentValue = 10 * currentValue + (letter - 48);
-
-        }
-
-        while (currentValue <= value) {
-
-            text.text = currentValue.ToString();
             currentValue++;
+            text.text = currentValue.ToString();
+            index++;
 
             yield return new WaitForSeconds(0.045f);
 
         }
         
     }
-	
+
+    IEnumerator DecrementCounter(int value)
+    {
+
+        int tempValue = value * -1;
+
+        int index = 0;
+
+        while (index < tempValue)
+        {
+
+            currentValue--;
+            text.text = currentValue.ToString();
+            index++;
+
+            yield return new WaitForSeconds(0.02f);
+
+        }
+
+    }
+
 }

@@ -44,11 +44,29 @@ public class BotCounterWidget : MonoBehaviour {
 
     }
 
+    public void EmptyCounter() {
+
+        StartCoroutine(DecreaseFill(0));
+        text.UpdateValue(0);
+
+    }
+
     IEnumerator IncreaseFill(float maxValue) {
 
         while (image.fillAmount < maxValue) {
 
             image.fillAmount += 0.2f * Time.deltaTime;
+            yield return new WaitForEndOfFrame();
+
+        }
+
+    }
+
+    IEnumerator DecreaseFill(float value) {
+
+        while (image.fillAmount > value) {
+
+            image.fillAmount -= 0.4f * Time.deltaTime;
             yield return new WaitForEndOfFrame();
 
         }
