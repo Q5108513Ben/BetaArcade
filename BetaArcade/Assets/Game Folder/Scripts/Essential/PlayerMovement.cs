@@ -23,6 +23,8 @@ public class PlayerMovement : MonoBehaviour {
     public float speedVelocity = 10;
 
 
+    public float maxVelocity = 5f;
+
     private Rigidbody rb;
 
     public bool jumpHeld = false;
@@ -42,6 +44,10 @@ public class PlayerMovement : MonoBehaviour {
         // Had to stick this here instead of in the start function because Unity
         // likes to call Start() in random orders leading to 'current_room' being
         // uninitialised sometimes.
+
+        if (Input.GetKey(KeyCode.J))
+            Debug.Log("Current Position: " + transform.position + " || Current Velocity: " + rb.velocity);
+
         if (!initialUpdate)
         {
             current_camera.UpdateRoomBoundary(current_room);
@@ -52,6 +58,9 @@ public class PlayerMovement : MonoBehaviour {
         var x = Input.GetAxis("Horizontal") * Time.deltaTime * speedVelocity;
 
         transform.Translate(x, 0, 0);
+
+        //if(rb.velocity.x < maxVelocity || rb.velocity.x > -maxVelocity)
+        //    rb.velocity += new Vector3(x, 0, 0);
 
         // Vertical movement
         // Check for player input
