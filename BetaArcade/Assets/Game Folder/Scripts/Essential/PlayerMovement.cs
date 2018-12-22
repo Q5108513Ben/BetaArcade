@@ -55,13 +55,13 @@ public class PlayerMovement : MonoBehaviour {
 
         // Vertical movement
         // Check for player input
-        if (Input.GetKey(KeyCode.W) && !isJumping && !isFalling)
+        if (Input.GetButton("Jump") && !isJumping && !isFalling)
         {
             rb.velocity = Vector3.up * jumpVelocity;
             isJumping = true;
             jumpHeld = true;
         }
-        else if (Input.GetKeyUp(KeyCode.W) && isJumping)
+        else if (Input.GetButtonUp("Jump") && isJumping)
         {
             //isJumping = false;
             jumpHeld = false;

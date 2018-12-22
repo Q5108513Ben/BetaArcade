@@ -181,7 +181,7 @@ public class CoreAttraction : MonoBehaviour {
 
         #region KEY_PRESS_CHECKS
 
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetButton("Drop Nanobots"))//Input.GetKey(KeyCode.LeftShift))
         {
             //isAttracting = !isAttracting;
             if (maxRad > attractionDeductionRate)
@@ -190,12 +190,12 @@ public class CoreAttraction : MonoBehaviour {
                 maxRad = 0;
         }
 
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetButtonUp("Drop Nanobots"))//Input.GetKeyUp(KeyCode.LeftShift))
             maxRad = absoluteMaxRad;
 
 
 
-        if (Input.GetKeyUp(KeyCode.E))
+        if (Input.GetButtonUp("Toggle Form"))//Input.GetKeyUp(KeyCode.E))
         {
             isSolid = !isSolid;
 
@@ -253,15 +253,7 @@ public class CoreAttraction : MonoBehaviour {
             Debug.Log("Core Radius after: " + this.GetComponent<SphereCollider>().radius);
 
         }
-
-
-
-        //Debug button
-        if (Input.GetKeyUp(KeyCode.J))
-        {
-            Debug.Log(this.GetComponent<Rigidbody>().velocity.magnitude);
-        }
-
+        
         #endregion
 
 
