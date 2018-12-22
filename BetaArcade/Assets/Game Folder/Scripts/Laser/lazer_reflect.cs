@@ -48,61 +48,63 @@ public class lazer_reflect : MonoBehaviour
             {
                 isON = false;
             }
+        }
 
-            if (isON == true)
+        if (isON == true)
+        {
+            if (reflectionsRemaining == 0)
             {
-                if (reflectionsRemaining == 0)
+                return;
+            }
+
+            Vector3 startingPosition = lazerPosition;
+
+
+            //raycast to detect reflection
+            Ray ray = new Ray(lazerPosition, direction);
+            RaycastHit hit;
+
+
+
+            if (Physics.Raycast(ray, out hit, maxDistance))
+            {
+
+
+                if (hit.transform.gameObject.tag == "reflect")
                 {
-                    return;
+                    direction = Vector3.Reflect(direction, hit.normal);
+                    lazerPosition = hit.point; // updates the hit point for mutiple reflections   
+
                 }
-
-                Vector3 startingPosition = lazerPosition;
-
-
-                //raycast to detect reflection
-                Ray ray = new Ray(lazerPosition, direction);
-                RaycastHit hit;
-
-
-
-                if (Physics.Raycast(ray, out hit, maxDistance))
+                else if (hit.transform.gameObject.tag != "reflect")
                 {
-
-
-                    if (hit.transform.gameObject.tag == "reflect")
-                    {
-                        direction = Vector3.Reflect(direction, hit.normal);
-                        lazerPosition = hit.point; // updates the hit point for mutiple reflections   
-
-                    }
-                    else if (hit.transform.gameObject.tag != "reflect")
-                    {
-                        lazerPosition += direction * maxDistance;
-                        lazerPosition = hit.point;
-                    }
-                    else
-                    {
-                        lazerPosition += direction * maxDistance;
-                    }
+                    lazerPosition += direction * maxDistance;
+                    lazerPosition = hit.point;
                 }
                 else
                 {
                     lazerPosition += direction * maxDistance;
                 }
-
-
-                Gizmos.color = Color.red;
-                Gizmos.DrawLine(startingPosition, lazerPosition);
-                DrawLazerReflection(lazerPosition, direction, reflectionsRemaining - 1);
-
-                //for drawing the lines in the game display
-                //  line.SetPosition(0, startingPosition);
-                //  line.SetPosition(1, lazerPosition + (direction * maxDistance * reflectionsRemaining));
-
-                //  lineRenderer.enabled = true; //needed if it would bw disabled on start
+            }
+            else
+            {
+                lazerPosition += direction * maxDistance;
             }
 
+
+            Gizmos.color = Color.red;
+            Gizmos.DrawLine(startingPosition, lazerPosition);
+            DrawLazerReflection(lazerPosition, direction, reflectionsRemaining - 1);
+
+            //for drawing the lines in the game display
+            //  line.SetPosition(0, startingPosition);
+            //  line.SetPosition(1, lazerPosition + (direction * maxDistance * reflectionsRemaining));
+
+            //  lineRenderer.enabled = true; //needed if it would bw disabled on start
         }
 
     }
 }
+
+    
+
