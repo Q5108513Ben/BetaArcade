@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEngine.UI;
 using System.Collections;
 
 public class RefillStation : MonoBehaviour {
@@ -17,7 +18,13 @@ public class RefillStation : MonoBehaviour {
 
     public float cooldownTimer;
 
+    public BotCounterWidget counter;
+    public Canvas canvas;
+    public Vector2 UIOffset = new Vector2(0.35f, 0.5f);
+
     public void Start() {
+
+        #region Generating Bot Spawn Positions
 
         float x = 0f;
         float y = 0f;
@@ -40,6 +47,24 @@ public class RefillStation : MonoBehaviour {
 
         }
 
+        #endregion
+
+        #region Adding UI Text
+
+        GameObject textObject = new GameObject("UI Text");
+        textObject.transform.SetParent(canvas.transform);
+        textObject.transform.localScale = new Vector3(0.65f, 0.65f, 0.65f);
+        textObject.transform.position = new Vector3(this.transform.position.x + UIOffset.x, this.transform.position.y + UIOffset.y, 1);
+
+        Text text = textObject.AddComponent<Text>();
+        text.text = refillMax.ToString();
+        Font ArialFont = (Font)Resources.GetBuiltinResource(typeof(Font), "Arial.ttf");
+        text.font = ArialFont;
+        text.fontSize = 20;
+        text.material = ArialFont.material;
+
+        #endregion
+
     }
 
     private void OnTriggerEnter(Collider collider) {
@@ -53,7 +78,7 @@ public class RefillStation : MonoBehaviour {
             if (currentBots > refillMax) { return; }
 
             else {
-
+                //max is a sexy boi
                 noOfObjectsToCreate = refillMax - currentBots;
 
                 if (noOfObjectsToCreate > maxCreatedBots) {
@@ -78,6 +103,12 @@ public class RefillStation : MonoBehaviour {
 
             hasRefilled = true;
             StartCoroutine(Cooldown(cooldownTimer));
+
+            if (counter != null) {
+
+                counter.SetCounter((currentBots + noOfObjectsToCreate) / 100f);
+
+            }
 
         }
 
