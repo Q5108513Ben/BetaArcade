@@ -13,8 +13,6 @@ public class ObjectCreation : MonoBehaviour {
 
     public Vector2[] objectSpawnOffset = new Vector2[100];
 
-    public BotCounterWidget counter;
-
     public void Start() {
 
         float x = 0f;
@@ -55,12 +53,6 @@ public class ObjectCreation : MonoBehaviour {
                 StartCoroutine(WaitOnSpawn(newBot, timeToWait));
 
                 timeToWait += 0.05f;
-
-            }
-
-            if (counter != null) {
-
-                counter.AddCounter(noOfObjectsToCreate / 100f);
 
             }
 
