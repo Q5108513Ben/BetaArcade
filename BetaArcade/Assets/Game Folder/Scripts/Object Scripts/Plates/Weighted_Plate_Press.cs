@@ -8,6 +8,8 @@ public class Weighted_Plate_Press : MonoBehaviour {
 
     public int minBotsRequired = 0;
 
+    public bool canUseUnusedBots;
+
     public bool isToggle;
     public bool isActive;
 
@@ -53,6 +55,20 @@ public class Weighted_Plate_Press : MonoBehaviour {
         {
             isActive = false;
         }
+
+
+        if(GetComponentInChildren<Bot_Detection>().numBots >= minBotsRequired && !isActive && canUseUnusedBots)
+        {
+            isActive = true;
+        }
+
+        if(GetComponentInChildren<Bot_Detection>().numBots < minBotsRequired && isActive && canUseUnusedBots)
+        {
+            isActive = false;
+        }
+
+
+
 
         //Lerping once active
         if (isActive && !hasLerped)
