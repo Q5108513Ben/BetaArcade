@@ -53,7 +53,7 @@ public class RefillStation : MonoBehaviour {
 
         GameObject textObject = new GameObject("UI Text");
         textObject.transform.SetParent(canvas.transform);
-        textObject.transform.localScale = new Vector3(0.01f, 0.01f, 1f);
+        textObject.transform.localScale = new Vector3(0.65f, 0.65f, 0.65f);
         textObject.transform.position = new Vector3(this.transform.position.x + UIOffset.x, this.transform.position.y + UIOffset.y, 1);
 
         Text text = textObject.AddComponent<Text>();

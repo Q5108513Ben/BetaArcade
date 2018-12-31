@@ -3,7 +3,7 @@
 public class Respawn : MonoBehaviour {
 
     private Vector3 respawnPosition = new Vector3(0, 0, 0);
-    public Vector3 repsawnOffset = new Vector3(0, 0, 0);
+    public Vector3 respawnOffset = new Vector3(0, 0, 0);
 
     private void Start() {
 
@@ -15,7 +15,7 @@ public class Respawn : MonoBehaviour {
 
         if (other.tag == "Player") {
 
-            other.gameObject.GetComponent<PlayerMovement>().respawnLocation = respawnPosition;
+            other.gameObject.GetComponent<PlayerMovement>().respawnLocation = respawnPosition + respawnOffset;
 
         }
 
