@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System;
+﻿using UnityEngine;
+
 
 public class PlayerMovement : MonoBehaviour {
 
@@ -32,6 +30,9 @@ public class PlayerMovement : MonoBehaviour {
     public bool isFalling = false;
 
     bool initialUpdate = false;
+
+    public BotCounterWidget botCounter;
+    public Vector3 respawnLocation;
 
     private void Awake()
     {
@@ -104,6 +105,8 @@ public class PlayerMovement : MonoBehaviour {
         if (transform.position.x < current_room.boundary_left)
         {
 
+            RoomBoundary tempCurrentRoom = current_room;
+
             foreach (var room in current_room.rooms_to_left)
             {
 
@@ -117,10 +120,16 @@ public class PlayerMovement : MonoBehaviour {
                 }
             }
 
+            if (current_room == tempCurrentRoom) {
+                Respawn();
+            }
+
         }
 
         else if (transform.position.x > current_room.boundary_right)
         {
+
+            RoomBoundary tempCurrentRoom = current_room;
 
             foreach (var room in current_room.rooms_to_right)
             {
@@ -135,10 +144,16 @@ public class PlayerMovement : MonoBehaviour {
                 }
             }
 
+            if (current_room == tempCurrentRoom) {
+                Respawn();
+            }
+
         }
 
         else if (transform.position.y < current_room.boundary_bottom)
         {
+
+            RoomBoundary tempCurrentRoom = current_room;
 
             foreach (var room in current_room.rooms_below)
             {
@@ -153,10 +168,16 @@ public class PlayerMovement : MonoBehaviour {
                 }
             }
 
+            if (current_room == tempCurrentRoom) {
+                Respawn();
+            }
+
         }
 
         else if (transform.position.y > current_room.boundary_top)
         {
+
+            RoomBoundary tempCurrentRoom = current_room;
 
             foreach (var room in current_room.rooms_above)
             {
@@ -171,9 +192,32 @@ public class PlayerMovement : MonoBehaviour {
                 }
             }
 
+            if (current_room == tempCurrentRoom) {
+                Respawn();
+            }
+
         }
 
         #endregion
 
     }
+
+    private void Respawn() {
+
+        transform.position = respawnLocation;
+
+        foreach (var bot in GameObject.FindGameObjectsWithTag("Bot")) {
+
+            Destroy(bot);
+
+        }
+
+        if (botCounter != null) {
+
+            botCounter.EmptyCounter();
+
+        }
+
+    }
+
 }
