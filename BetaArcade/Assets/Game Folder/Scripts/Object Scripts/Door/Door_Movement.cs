@@ -4,24 +4,23 @@ using UnityEngine;
 
 public class Door_Movement : MonoBehaviour {
 
-    public bool isToggle;
     public bool isActive;
+    private bool isClosed = true;
 
-    private bool hasLerped = false;
+    private float speed = 8.5f;
 
-    public GameObject startPoint;
-    public GameObject endPoint;
+    private bool hasStarted = true;
+    private Vector3 velocity;
 
-    private Vector3 startPosition;
-    private Vector3 endPosition;
-    private Vector3 currentPosition;
+    private GameObject doorObject;
+    private GameObject lightObject;
+    
+    private Rigidbody rb;
+    private Active_Receiver ar;
+    private Player_Detection pd;
 
-    private float startTime;
-    private float journeyLength;
-
-    public float speed = 1.0f;
-
-    private bool hasTimeStarted = false;
+    private Vector3 closedPos;
+    private Vector3 openPos;
 
     private enum DoorType
     {
@@ -35,105 +34,106 @@ public class Door_Movement : MonoBehaviour {
 
     // Use this for initialization
     void Start () {
-        startPosition = startPoint.transform.position;
-        endPosition = endPoint.transform.position;
-        journeyLength = Vector3.Distance(startPosition, endPosition);
+
+        doorObject = transform.Find("Door").gameObject;
+        lightObject = transform.Find("Light").gameObject;
+
+        rb = doorObject.GetComponent<Rigidbody>();
+        ar = GetComponent<Active_Receiver>();
+        pd = GetComponent<Player_Detection>();
+
+        closedPos = doorObject.transform.position;
+        openPos = doorObject.transform.position + new Vector3(0f, 0f, 1.5f);
+
+        
     }
 
     // Update is called once per frame
-    void Update () {
-		if(!isActive && GetComponentInParent<Active_Receiver>().isActive && doorType == DoorType.RequiresActivation)
+    void FixedUpdate () {
+
+        if (!isActive && ar.isActive && doorType == DoorType.RequiresActivation)
         {
             isActive = true;
         }
-        else if(!isActive && GetComponentInParent<Player_Detection>().playerDetected && doorType == DoorType.RequiresPlayer)
+        else if (!isActive && pd.playerDetected && doorType == DoorType.RequiresPlayer)
         {
             isActive = true;
         }
-        else if(!isActive && GetComponentInParent<Player_Detection>().playerDetected && GetComponentInParent<Active_Receiver>().isActive && doorType == DoorType.RequiresActivationAndPlayer)
+        else if (!isActive && pd.playerDetected && ar.isActive && doorType == DoorType.RequiresActivationAndPlayer)
         {
             isActive = true;
         }
 
-        if((isActive && isToggle && !GetComponentInParent<Active_Receiver>().isActive) && doorType == DoorType.RequiresActivation)
+        if (isActive && !ar.isActive && doorType == DoorType.RequiresActivation)
         {
             isActive = false;
         }
-        else if(isActive && !GetComponentInParent<Player_Detection>().playerDetected && doorType == DoorType.RequiresPlayer)
+        else if (isActive && !pd.playerDetected && doorType == DoorType.RequiresPlayer)
         {
             isActive = false;
         }
-        else if(isActive && doorType == DoorType.RequiresActivationAndPlayer && (!GetComponentInParent<Player_Detection>().playerDetected || !GetComponentInParent<Active_Receiver>().isActive))
+        else if (isActive && doorType == DoorType.RequiresActivationAndPlayer && (!pd.playerDetected || !ar.isActive))
         {
             isActive = false;
         }
 
-        //Lerping once active
-        if (isActive && !hasLerped)
+        float distanceToGo = speed * Time.deltaTime;
+        //If it's not open and should, do so.
+        if(isActive && isClosed)
         {
-            if (!hasTimeStarted)
+            while (distanceToGo > 0)
             {
-                startTime = Time.time;
-                hasTimeStarted = true;
-                //Debug.Log(startTime);
-            }
+                Vector3 direction = openPos - doorObject.transform.position;
 
-            float distCovered = (Time.time - startTime) * speed;
+                float dist = distanceToGo;
 
-            //float distCovered = Vector3.Distance(transform.position, startPosition);
+                if (direction.sqrMagnitude < dist * dist)
+                {
+                    isClosed = false;
+                    break;
+                }
 
-            float fracJourney = distCovered / journeyLength;
+                velocity = direction.normalized * dist;
 
-            transform.position = Vector3.Lerp(startPosition, endPosition, fracJourney);
+                doorObject.transform.position += direction.normalized * dist;
+                //rb.MovePosition(rb.position + velocity);
 
-            //Debug.Log(transform.position);
-
-            if (transform.position == endPosition)
-            {
-                hasLerped = true;
-                hasTimeStarted = false;
-            }
-            else
-            {
-                currentPosition = transform.position;
+                distanceToGo -= dist;
             }
         }
 
-        //if(!isActive && !hasLerped)
-        //{
-        //    float distCovered = Vector3.Distance(currentPosition, endPosition);
-        //    float fracJourney = distCovered / journeyLength;
-        //    transform.position = Vector3.Lerp(startPosition, endPosition, fracJourney);
-        //    Debug.Log(transform.position);
-        //    if (transform.position == endPosition)
-        //    {
-        //        hasLerped = true;
-        //        hasTimeStarted = false;
-        //    }
-        //}
-
-
-        if (!isActive && hasLerped && isToggle)
+        //If it's open and shouldn't be, close.
+        if(!isActive && !isClosed)
         {
-            if (!hasTimeStarted)
+            while (distanceToGo > 0)
             {
-                startTime = Time.time;
-                hasTimeStarted = true;
-            }
+                Vector3 direction = closedPos - doorObject.transform.position;
 
-            float distCovered = (Time.time - startTime) * speed;
+                float dist = distanceToGo;
 
-            float fracJourney = distCovered / journeyLength;
+                if (direction.sqrMagnitude < dist * dist)
+                {
+                    isClosed = true;
+                    break;
+                }
 
-            transform.position = Vector3.Lerp(endPosition, startPosition, fracJourney);
+                velocity = direction.normalized * dist;
 
-            if (transform.position == startPosition)
-            {
-                hasLerped = false;
-                hasTimeStarted = false;
+                doorObject.transform.position += direction.normalized * dist;
+                //rb.MovePosition(rb.position + velocity);
+
+                distanceToGo -= dist;
             }
         }
 
+        if(isActive && !isClosed)
+        {
+            lightObject.GetComponent<Light_Switch>().isOn = true;
+        }
+        else
+        {
+            lightObject.GetComponent<Light_Switch>().isOn = false;
+        }
 
     }
 }

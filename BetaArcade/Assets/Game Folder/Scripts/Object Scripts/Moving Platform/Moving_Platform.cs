@@ -20,8 +20,6 @@ public class Moving_Platform : MonoBehaviour {
 
     public Vector3[] wayPoints = new Vector3[1];
 
-    private Vector3[] worldWayPoints;
-
     public float[] waitTimes = new float[1];
 
     private int currentPoint = 0;
