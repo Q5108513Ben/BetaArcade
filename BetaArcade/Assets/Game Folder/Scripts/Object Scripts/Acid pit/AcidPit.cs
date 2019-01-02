@@ -25,8 +25,7 @@ public class AcidPit : MonoBehaviour {
             Destroy(col.gameObject);//destroys the player object.
             deathSound.Play();
 
-            Debug.Log("player is dead"); // this is for testing only and will need to be removed
-                                         // and replaced with the menu popup. 
+           
 
             deathMenuPopUp.enabled = true;
 

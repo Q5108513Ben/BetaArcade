@@ -1316,6 +1316,8 @@ GameObject:
   - component: {fileID: 437079952}
   - component: {fileID: 437079951}
   - component: {fileID: 437079950}
+  - component: {fileID: 437079957}
+  - component: {fileID: 437079956}
   m_Layer: 9
   m_Name: Core
   m_TagString: Core
@@ -1429,6 +1431,32 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &437079956
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 437079949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f38bb8f8fbe6d83448cab9b5e8ebb566, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathMenuPopUp: {fileID: 0}
+  deathSound: {fileID: 0}
+--- !u!114 &437079957
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 0}
+  m_GameObject: {fileID: 437079949}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 797eb6458ea31e248b9e3338863db026, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  deathMenuPopUp: {fileID: 0}
+  deathSound: {fileID: 0}
 --- !u!1001 &483598045
 Prefab:
   m_ObjectHideFlags: 0
@@ -3247,6 +3275,7 @@ MonoBehaviour:
   fallMultiplier: 2
   lowJumpMultiplier: 2
   speedVelocity: 6
+  maxVelocity: 5
   jumpHeld: 0
   isJumping: 0
   isFalling: 0
