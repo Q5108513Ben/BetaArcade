@@ -6,13 +6,13 @@ InputManager:
   serializedVersion: 2
   m_Axes:
   - serializedVersion: 3
-    m_Name: Horizontal
+    m_Name: HorizontalKeyboardLeft
     descriptiveName: 
     descriptiveNegativeName: 
-    negativeButton: left
-    positiveButton: right
-    altNegativeButton: a
-    altPositiveButton: d
+    negativeButton: 
+    positiveButton: left
+    altNegativeButton: 
+    altPositiveButton: a
     gravity: 3
     dead: 0.1
     sensitivity: 0.5
@@ -211,5 +211,21 @@ InputManager:
     snap: 1
     invert: 0
     type: 2
+    axis: 0
+    joyNum: 0
+  - serializedVersion: 3
+    m_Name: HorizontalKeyboardRight
+    descriptiveName: 
+    descriptiveNegativeName: 
+    negativeButton: 
+    positiveButton: right
+    altNegativeButton: 
+    altPositiveButton: d
+    gravity: 3
+    dead: 0.1
+    sensitivity: 0.5
+    snap: 1
+    invert: 0
+    type: 0
     axis: 0
     joyNum: 0

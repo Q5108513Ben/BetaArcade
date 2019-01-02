@@ -34,6 +34,10 @@ public class PlayerMovement : MonoBehaviour {
     public BotCounterWidget botCounter;
     public Vector3 respawnLocation;
 
+    private float xMovement;
+
+    private bool isController;
+
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
@@ -56,9 +60,34 @@ public class PlayerMovement : MonoBehaviour {
         }
 
         // Horizontal movement
-        var x = Input.GetAxis("Horizontal") * Time.deltaTime * speedVelocity;
 
-        transform.Translate(x, 0, 0);
+
+        if(Input.GetButton("HorizontalKeyboardLeft") || Input.GetButton("HorizontalKeyboardRight"))
+        {
+            isController = false;
+        }
+        else
+        {
+            isController = true;
+        }
+
+        if (isController)
+        {
+            xMovement = Input.GetAxis("Horizontal") * 2.25f * Time.deltaTime * speedVelocity;
+        }
+        else
+        {
+            if(Input.GetButton("HorizontalKeyboardLeft"))
+            {
+                xMovement = Time.deltaTime * -speedVelocity;
+            }
+            else
+            {
+                xMovement = Time.deltaTime * speedVelocity;
+            }
+        }
+
+        transform.Translate(xMovement, 0, 0);
 
         //if(rb.velocity.x < maxVelocity || rb.velocity.x > -maxVelocity)
         //    rb.velocity += new Vector3(x, 0, 0);

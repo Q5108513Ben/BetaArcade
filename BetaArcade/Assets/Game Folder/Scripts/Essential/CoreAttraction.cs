@@ -265,27 +265,9 @@ public class CoreAttraction : MonoBehaviour {
         currPlayerDist = Vector3.Distance(playerPosition, corePos);
 
         if(currPlayerDist > maxPlayerDist)
-        {
-            //Vector3 direction = (playerPosition - corePos).normalized;
-
-
-            //float currForce = forceCore;// * (smoothStep(playerDist, 10, distance)) + (forceCore * 0.1f);
-            //if (this.GetComponent<Rigidbody>().velocity.magnitude < 15)
-            //    this.GetComponent<Rigidbody>().AddForce(direction * currForce * Time.fixedDeltaTime);
-            //else
-            //    this.GetComponent<Rigidbody>().velocity /= 2f;
-
-
-            //this.transform.position = Vector3.MoveTowards(corePos, playerPosition, coreMoveRate);
             this.transform.position = Vector3.Lerp(corePos, playerPosition, Time.time);
-        }
         else
-        {
-            //Vector3 direction = (playerPosition - corePos).normalized;
-            //float currForce = forceCore;// * (smoothStep(playerDist, 100, distance));
-            //this.GetComponent<Rigidbody>().velocity = this.GetComponent<Rigidbody>().velocity * smoothStep(0, maxPlayerDist, currPlayerDist);
             this.transform.position = playerPosition;
-        }
 
         #endregion
 
