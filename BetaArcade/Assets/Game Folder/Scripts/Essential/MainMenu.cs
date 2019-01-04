@@ -1,12 +1,24 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 
 public class MainMenu : MonoBehaviour {
 
     public List<Image> menuImages;
     public List<Text> menuText;
+
+    private void Update() {
+        
+        if (Input.GetKeyDown(KeyCode.F5)) {
+
+            SceneManager.LoadScene(SceneManager.GetActiveScene().name);
+
+        }
+
+    }
+
 
     public void EnableUI() {
 
