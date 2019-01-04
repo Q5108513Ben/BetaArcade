@@ -5,22 +5,32 @@ using UnityEngine;
 public class lazer_reflect : MonoBehaviour
 {
 
-    //private LineRenderer line;
+    public LineRenderer line;
+    public LineRenderer line2;
 
-
+    Vector3 lasersLastHitPoint;
 
     public int maxReflecionCount = 1;
     public float maxDistance = 100;
     public bool isUseingAButton = false;
     private bool isON = false;
-
+    private bool LaserIsReflecting;
+    private bool isWaiting = false;
+    private bool isWaiting2 = false;
+    private float WaitingTime = 0.3f;
+    private float WaitingTime2 = 0.3f;
 
     void Start()
     {
-        //  line = GetComponent<LineRenderer>();
+        if (maxReflecionCount > 1)
+            {
+            maxReflecionCount = 1;
+            }
 
     }
+    
 
+    
 
 
 
@@ -47,6 +57,7 @@ public class lazer_reflect : MonoBehaviour
             if ((isON && !GetComponentInParent<Active_Receiver>().isActive))
             {
                 isON = false;
+
             }
         }
 
@@ -70,25 +81,56 @@ public class lazer_reflect : MonoBehaviour
             {
 
 
+                if (hit.transform.gameObject.tag == "Bot")
+                {
+                    if (isWaiting == false)
+                    {
+                        Destroy(hit.transform.gameObject);
+                        StartCoroutine(killBot());
+                    }
+                }
+                if (hit.transform.gameObject.tag == "Core")
+                {
+                    GameObject.Find("Core").SetActive(false);
+                }
+
                 if (hit.transform.gameObject.tag == "reflect")
                 {
-                    direction = Vector3.Reflect(direction, hit.normal);
-                    lazerPosition = hit.point; // updates the hit point for mutiple reflections   
 
+                    
+                        LaserIsReflecting = true;
+                        direction = Vector3.Reflect(direction, hit.normal);
+                        lazerPosition = hit.point; // updates the hit point for mutiple reflections   
+                        lasersLastHitPoint = lazerPosition;
+                        line2.enabled = true;
+
+                    
                 }
                 else if (hit.transform.gameObject.tag != "reflect")
                 {
-                    lazerPosition += direction * maxDistance;
-                    lazerPosition = hit.point;
+                  
+                    
+                        LaserIsReflecting = true;
+                        lazerPosition = hit.point;
+                        lasersLastHitPoint = lazerPosition;
+                        line2.enabled = false;
+ 
+                    
                 }
                 else
                 {
-                    lazerPosition += direction * maxDistance;
+                    LaserIsReflecting = false;
+
                 }
             }
             else
             {
-                lazerPosition += direction * maxDistance;
+                if (LaserIsReflecting == false)
+                {
+                    lazerPosition += direction * maxDistance;
+                    lasersLastHitPoint = lazerPosition;
+                    line2.enabled = false;
+                }
             }
 
 
@@ -97,13 +139,24 @@ public class lazer_reflect : MonoBehaviour
             DrawLazerReflection(lazerPosition, direction, reflectionsRemaining - 1);
 
             //for drawing the lines in the game display
-            //  line.SetPosition(0, startingPosition);
-            //  line.SetPosition(1, lazerPosition + (direction * maxDistance * reflectionsRemaining));
+            line.SetPosition(0, startingPosition);
+            line.SetPosition(1, lasersLastHitPoint);
 
-            //  lineRenderer.enabled = true; //needed if it would bw disabled on start
+            line2.SetPosition(0, lasersLastHitPoint);
+            line2.SetPosition(1, lazerPosition + (direction * maxDistance) );
+
+          
+
         }
 
     }
+    IEnumerator killBot()
+    {
+         yield return new WaitForSeconds(WaitingTime);
+         isWaiting = false;
+        
+    }
+
 }
 
     
