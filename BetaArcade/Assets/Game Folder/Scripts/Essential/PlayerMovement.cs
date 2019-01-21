@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System;
+﻿using UnityEngine;
+
 
 public class PlayerMovement : MonoBehaviour {
 
@@ -13,21 +11,32 @@ public class PlayerMovement : MonoBehaviour {
 
     [Tooltip("Amount of multiplicitive jump height of the player.")]
     [Range(1, 10)]
-    public float jumpVelocity;
+    public float jumpVelocity = 5;
 
-    public float fallMultiplier = 2.5f;
+    public float fallMultiplier = 2f;
     public float lowJumpMultiplier = 2f;
 
     [Tooltip("Amount of multiplicitive speed of the player.")]
     [Range(1, 100)]
-    public float speedVelocity;
+    public float speedVelocity = 10;
 
+
+    public float maxVelocity = 5f;
 
     private Rigidbody rb;
 
-    private bool isJumping = false;
+    public bool jumpHeld = false;
+    public bool isJumping = false;
+    public bool isFalling = false;
 
     bool initialUpdate = false;
+
+    public BotCounterWidget botCounter;
+    public Vector3 respawnLocation;
+
+    private float xMovement;
+
+    private bool isController;
 
     private void Awake()
     {
@@ -37,46 +46,95 @@ public class PlayerMovement : MonoBehaviour {
     // Update is called once per frame
     void Update () {
 
-        if (Input.GetKeyDown(KeyCode.W) && !isJumping)
-        {
-            rb.velocity = Vector3.up * jumpVelocity;
-            isJumping = true;
-        }
-
         // Had to stick this here instead of in the start function because Unity
         // likes to call Start() in random orders leading to 'current_room' being
         // uninitialised sometimes.
-        if (!initialUpdate) {
+
+        if (Input.GetKey(KeyCode.J))
+            Debug.Log("Current Position: " + transform.position + " || Current Velocity: " + rb.velocity);
+
+        if (!initialUpdate)
+        {
             current_camera.UpdateRoomBoundary(current_room);
             initialUpdate = true;
         }
 
-        var x = Input.GetAxis("Horizontal") * Time.deltaTime * speedVelocity;
+        // Horizontal movement
 
-        transform.Translate(x, 0, 0);
-        //rb.velocity += Vector3.right * x;
 
-        if (rb.velocity.y < 0)
+        if(Input.GetButton("HorizontalKeyboardLeft") || Input.GetButton("HorizontalKeyboardRight"))
+        {
+            isController = false;
+        }
+        else
+        {
+            isController = true;
+        }
+
+        if (isController)
+        {
+            xMovement = Input.GetAxis("Horizontal") * 2.25f * Time.deltaTime * speedVelocity;
+        }
+        else
+        {
+            if(Input.GetButton("HorizontalKeyboardLeft"))
+            {
+                xMovement = Time.deltaTime * -speedVelocity;
+            }
+            else
+            {
+                xMovement = Time.deltaTime * speedVelocity;
+            }
+        }
+
+        transform.Translate(xMovement, 0, 0);
+
+        //if(rb.velocity.x < maxVelocity || rb.velocity.x > -maxVelocity)
+        //    rb.velocity += new Vector3(x, 0, 0);
+
+        // Vertical movement
+        // Check for player input
+        if (Input.GetButton("Jump") && !isJumping && !isFalling)
+        {
+            rb.velocity = Vector3.up * jumpVelocity;
+            isJumping = true;
+            jumpHeld = true;
+        }
+        else if (Input.GetButtonUp("Jump") && isJumping)
+        {
+            //isJumping = false;
+            jumpHeld = false;
+        }
+
+        // Check if the player is falling
+        if (rb.velocity.y <= -0.3)
+        {
+            isJumping = false;
+            isFalling = true;
+        }
+        else if (rb.velocity.y >= -0.3)
+        {
+            isFalling = false;
+        }
+
+        // Adjust velocity based on previous info
+        if (rb.velocity.y > 0 && !jumpHeld)
+        { 
+            rb.velocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
+        }
+        else if (isFalling)
         {
             rb.velocity += Vector3.up * Physics.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
         }
-        else if (rb.velocity.y > 0 && !Input.GetKey(KeyCode.W))
-        {
-            rb.velocity += Vector3.up * Physics.gravity.y * (lowJumpMultiplier - 1) * Time.deltaTime;
-        }
-        else if (rb.velocity.y == 0)
-        {
-            isJumping = false;
-        }
-        
-        
 
-
+        
 
         #region Room Boundary Checks
 
         if (transform.position.x < current_room.boundary_left)
         {
+
+            RoomBoundary tempCurrentRoom = current_room;
 
             foreach (var room in current_room.rooms_to_left)
             {
@@ -91,10 +149,16 @@ public class PlayerMovement : MonoBehaviour {
                 }
             }
 
+            if (current_room == tempCurrentRoom) {
+                Respawn();
+            }
+
         }
 
         else if (transform.position.x > current_room.boundary_right)
         {
+
+            RoomBoundary tempCurrentRoom = current_room;
 
             foreach (var room in current_room.rooms_to_right)
             {
@@ -109,10 +173,16 @@ public class PlayerMovement : MonoBehaviour {
                 }
             }
 
+            if (current_room == tempCurrentRoom) {
+                Respawn();
+            }
+
         }
 
         else if (transform.position.y < current_room.boundary_bottom)
         {
+
+            RoomBoundary tempCurrentRoom = current_room;
 
             foreach (var room in current_room.rooms_below)
             {
@@ -127,10 +197,16 @@ public class PlayerMovement : MonoBehaviour {
                 }
             }
 
+            if (current_room == tempCurrentRoom) {
+                Respawn();
+            }
+
         }
 
         else if (transform.position.y > current_room.boundary_top)
         {
+
+            RoomBoundary tempCurrentRoom = current_room;
 
             foreach (var room in current_room.rooms_above)
             {
@@ -145,9 +221,32 @@ public class PlayerMovement : MonoBehaviour {
                 }
             }
 
+            if (current_room == tempCurrentRoom) {
+                Respawn();
+            }
+
         }
 
         #endregion
 
     }
+
+    private void Respawn() {
+
+        transform.position = respawnLocation;
+
+        foreach (var bot in GameObject.FindGameObjectsWithTag("Bot")) {
+
+            Destroy(bot);
+
+        }
+
+        if (botCounter != null) {
+
+            botCounter.EmptyCounter();
+
+        }
+
+    }
+
 }

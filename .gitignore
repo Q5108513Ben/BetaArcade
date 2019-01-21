@@ -27,6 +27,7 @@ sysinfo.txt
 *.userprefs
 *.pidb
 .DS_Store
+.vs/
 
 ###
 # OS generated
@@ -40,3 +41,6 @@ Icon?
 ehthumbs.db
 Thumbs.db
 Thumbs.db
+BetaArcade/.vs/BetaArcade/v15/Server/sqlite3/storage.ide
+BetaArcade/.vs/BetaArcade/v15/Server/sqlite3/storage.ide-wal
+BetaArcade/.vs/BetaArcade/v15/Server/sqlite3/storage.ide-shm
