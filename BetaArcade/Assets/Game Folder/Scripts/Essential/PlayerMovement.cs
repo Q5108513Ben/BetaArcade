@@ -1,7 +1,5 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-using System;
+﻿using UnityEngine;
+
 
 public class PlayerMovement : MonoBehaviour {
 
@@ -23,6 +21,8 @@ public class PlayerMovement : MonoBehaviour {
     public float speedVelocity = 10;
 
 
+    public float maxVelocity = 5f;
+
     private Rigidbody rb;
 
     public bool jumpHeld = false;
@@ -30,6 +30,13 @@ public class PlayerMovement : MonoBehaviour {
     public bool isFalling = false;
 
     bool initialUpdate = false;
+
+    public BotCounterWidget botCounter;
+    public Vector3 respawnLocation;
+
+    private float xMovement;
+
+    private bool isController;
 
     private void Awake()
     {
@@ -42,6 +49,10 @@ public class PlayerMovement : MonoBehaviour {
         // Had to stick this here instead of in the start function because Unity
         // likes to call Start() in random orders leading to 'current_room' being
         // uninitialised sometimes.
+
+        if (Input.GetKey(KeyCode.J))
+            Debug.Log("Current Position: " + transform.position + " || Current Velocity: " + rb.velocity);
+
         if (!initialUpdate)
         {
             current_camera.UpdateRoomBoundary(current_room);
@@ -49,19 +60,47 @@ public class PlayerMovement : MonoBehaviour {
         }
 
         // Horizontal movement
-        var x = Input.GetAxis("Horizontal") * Time.deltaTime * speedVelocity;
 
-        transform.Translate(x, 0, 0);
+
+        if(Input.GetButton("HorizontalKeyboardLeft") || Input.GetButton("HorizontalKeyboardRight"))
+        {
+            isController = false;
+        }
+        else
+        {
+            isController = true;
+        }
+
+        if (isController)
+        {
+            xMovement = Input.GetAxis("Horizontal") * 2.25f * Time.deltaTime * speedVelocity;
+        }
+        else
+        {
+            if(Input.GetButton("HorizontalKeyboardLeft"))
+            {
+                xMovement = Time.deltaTime * -speedVelocity;
+            }
+            else
+            {
+                xMovement = Time.deltaTime * speedVelocity;
+            }
+        }
+
+        transform.Translate(xMovement, 0, 0);
+
+        //if(rb.velocity.x < maxVelocity || rb.velocity.x > -maxVelocity)
+        //    rb.velocity += new Vector3(x, 0, 0);
 
         // Vertical movement
         // Check for player input
-        if (Input.GetKey(KeyCode.W) && !isJumping && !isFalling)
+        if (Input.GetButton("Jump") && !isJumping && !isFalling)
         {
             rb.velocity = Vector3.up * jumpVelocity;
             isJumping = true;
             jumpHeld = true;
         }
-        else if (Input.GetKeyUp(KeyCode.W) && isJumping)
+        else if (Input.GetButtonUp("Jump") && isJumping)
         {
             //isJumping = false;
             jumpHeld = false;
@@ -95,6 +134,8 @@ public class PlayerMovement : MonoBehaviour {
         if (transform.position.x < current_room.boundary_left)
         {
 
+            RoomBoundary tempCurrentRoom = current_room;
+
             foreach (var room in current_room.rooms_to_left)
             {
 
@@ -108,10 +149,16 @@ public class PlayerMovement : MonoBehaviour {
                 }
             }
 
+            if (current_room == tempCurrentRoom) {
+                Respawn();
+            }
+
         }
 
         else if (transform.position.x > current_room.boundary_right)
         {
+
+            RoomBoundary tempCurrentRoom = current_room;
 
             foreach (var room in current_room.rooms_to_right)
             {
@@ -126,10 +173,16 @@ public class PlayerMovement : MonoBehaviour {
                 }
             }
 
+            if (current_room == tempCurrentRoom) {
+                Respawn();
+            }
+
         }
 
         else if (transform.position.y < current_room.boundary_bottom)
         {
+
+            RoomBoundary tempCurrentRoom = current_room;
 
             foreach (var room in current_room.rooms_below)
             {
@@ -144,10 +197,16 @@ public class PlayerMovement : MonoBehaviour {
                 }
             }
 
+            if (current_room == tempCurrentRoom) {
+                Respawn();
+            }
+
         }
 
         else if (transform.position.y > current_room.boundary_top)
         {
+
+            RoomBoundary tempCurrentRoom = current_room;
 
             foreach (var room in current_room.rooms_above)
             {
@@ -162,9 +221,32 @@ public class PlayerMovement : MonoBehaviour {
                 }
             }
 
+            if (current_room == tempCurrentRoom) {
+                Respawn();
+            }
+
         }
 
         #endregion
 
     }
+
+    private void Respawn() {
+
+        transform.position = respawnLocation;
+
+        foreach (var bot in GameObject.FindGameObjectsWithTag("Bot")) {
+
+            Destroy(bot);
+
+        }
+
+        if (botCounter != null) {
+
+            botCounter.EmptyCounter();
+
+        }
+
+    }
+
 }
