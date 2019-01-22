@@ -181,7 +181,7 @@ public class CoreAttraction : MonoBehaviour {
 
         #region KEY_PRESS_CHECKS
 
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetButton("Drop Nanobots"))//Input.GetKey(KeyCode.LeftShift))
         {
             //isAttracting = !isAttracting;
             if (maxRad > attractionDeductionRate)
@@ -190,12 +190,12 @@ public class CoreAttraction : MonoBehaviour {
                 maxRad = 0;
         }
 
-        if (Input.GetKeyUp(KeyCode.Space))
+        if (Input.GetButtonUp("Drop Nanobots"))//Input.GetKeyUp(KeyCode.LeftShift))
             maxRad = absoluteMaxRad;
 
 
 
-        if (Input.GetKeyUp(KeyCode.E))
+        if (Input.GetButtonUp("Toggle Form"))//Input.GetKeyUp(KeyCode.E))
         {
             isSolid = !isSolid;
 
@@ -253,15 +253,7 @@ public class CoreAttraction : MonoBehaviour {
             Debug.Log("Core Radius after: " + this.GetComponent<SphereCollider>().radius);
 
         }
-
-
-
-        //Debug button
-        if (Input.GetKeyUp(KeyCode.J))
-        {
-            Debug.Log(this.GetComponent<Rigidbody>().velocity.magnitude);
-        }
-
+        
         #endregion
 
 
@@ -273,27 +265,9 @@ public class CoreAttraction : MonoBehaviour {
         currPlayerDist = Vector3.Distance(playerPosition, corePos);
 
         if(currPlayerDist > maxPlayerDist)
-        {
-            //Vector3 direction = (playerPosition - corePos).normalized;
-
-
-            //float currForce = forceCore;// * (smoothStep(playerDist, 10, distance)) + (forceCore * 0.1f);
-            //if (this.GetComponent<Rigidbody>().velocity.magnitude < 15)
-            //    this.GetComponent<Rigidbody>().AddForce(direction * currForce * Time.fixedDeltaTime);
-            //else
-            //    this.GetComponent<Rigidbody>().velocity /= 2f;
-
-
-            //this.transform.position = Vector3.MoveTowards(corePos, playerPosition, coreMoveRate);
             this.transform.position = Vector3.Lerp(corePos, playerPosition, Time.time);
-        }
         else
-        {
-            //Vector3 direction = (playerPosition - corePos).normalized;
-            //float currForce = forceCore;// * (smoothStep(playerDist, 100, distance));
-            //this.GetComponent<Rigidbody>().velocity = this.GetComponent<Rigidbody>().velocity * smoothStep(0, maxPlayerDist, currPlayerDist);
             this.transform.position = playerPosition;
-        }
 
         #endregion
 
